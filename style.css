@@ -1,0 +1,155 @@
+div.box {
+    float: left;
+    height: auto;
+}
+
+div.div1 {
+    float: left;
+    height: auto;
+}
+
+div.div2 {
+    height: auto;
+    display: inline;
+    position: absolute;
+}
+
+div.clear {
+    clear: both;
+    height: 1px;
+    overflow: hidden;
+    font-size: 0pt;
+    margin-top: -1px;
+}
+
+.res {
+    border: 3px solid #004237;
+    border-radius: 5px;
+    float: left;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.res:hover {
+    background-color: #94cdba;
+}
+
+.res p {
+    float: left;
+}
+
+.textinput {
+    width: 65%;
+}
+
+.invisible {
+    display: none;
+}
+
+.boatContent {
+    display: inline-block;
+    width: 50%;
+    float: left;
+}
+
+hr {
+    float: left;
+    width: 100%;
+    margin-top: 10px;
+    border-color: #94cdba;
+}
+
+.dimension hr {
+	margin: 5px;
+}
+
+p {
+	float: left;
+}
+
+h3 {
+    float: left;
+    margin-top: 5px;
+    color: #004237;
+}
+
+h4 {
+    float: left;
+}
+
+.topNav {
+    height: 100px;
+    background-color: #004237;
+    margin-bottom: 30px;
+}
+
+.topNav img {
+    height: 100px;
+}
+
+.loginNav {
+    height: 30px;
+    background-color: #94cdba;
+}
+
+a {
+    color: #004237;
+    text-decoration: none;
+    float: left;
+    width: 100%;
+}
+
+a:hover {
+    color: #004237;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn-search {
+    background-color: #004237;
+    color: #94cdba;
+}
+
+.btn-search:hover {
+    background-color: #004230;
+    color: #94cdba;
+    font-weight: 400;
+}
+
+.input:focus {
+    outline: none !important;
+    border:1px solid #004237;
+    box-shadow: 0 0 10px #94cdba;
+}
+
+.image-rounded {
+    float: left;
+    margin: 10px 0;
+    border-radius: 5px;
+    height: 100px;
+    /*width: 25%;*/
+}
+
+/*new style*/
+.slideImages {
+	float: right;
+}
+
+.w3-display-right {
+	right: 3%;
+}
+
+.w3-display-left {
+	left: 3%;
+}
+
+.foot{
+	margin-top: 30px;
+    height: 200px;
+    background-color: #94cdba;
+}
+
+.footer {
+	height: 50px;
+    background-color: #004230;	
+}
