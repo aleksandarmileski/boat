@@ -1,12 +1,35 @@
 <?php
 require "functions.php";
 
+
 if (isset($_GET['id'])) {
 //    echo "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
     $id = htmlspecialchars($_GET['id']);
+
     if (checkBoatExist($id)) {
+
+        // Get cURL resource
+        $curl = curl_init();
+        // Set some options - we are passing in a useragent too here
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => 'http://46.101.221.106/api/boat/'.$id.'?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlbmtvbWFuY2Vza2kxMjNAZ21haWwuY29tIiwiaWQiOjE4NywiaWF0IjoxNDc4MDEyNDMxfQ.snQ9PvwVTrsJlNIfi69ZP5flsZe3lntaPCsszAakU9U',
+            CURLOPT_USERAGENT => 'Sample cURL Boat Request'
+        ));
+        // Send the request & save response to $resp
+        $resp = curl_exec($curl);
+        // Close request to clear up some resources
+        curl_close($curl);
+
+        //    echo gettype(json_decode($resp));
+        $boatInfoObject=(array)json_decode($resp);
+
+        if (isset($resp)) {
+            var_dump($boatInfoObject);
+        }
+
         $boatInfo = displayBoatInfo($id);
-//        var_dump($boatInfo);
+        //        var_dump($boatInfo);
         echo "<div class='loginNav col-md-12'></div>";
         echo "<a href='index.php'><div class='topNav col-md-12'>";
         echo "<img  src='Goliath.png' />";

@@ -3,6 +3,7 @@ include "db.php";
 
 // var_dump($_SERVER) ;
 
+
 // Return random boats
 function getRandomBoats()
 {

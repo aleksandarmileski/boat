@@ -1,6 +1,8 @@
 <?php
 require "functions.php";
 
+//echo "Your ip is: ".$_SERVER['REMOTE_ADDR'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,6 +34,7 @@ require "functions.php";
             <select id="boat-type" class="form-control input" name="boat-type">
                 <option value="all">All boats</option>
                 <?php
+
                 $types = getBoatTypes();
                 foreach ($types as $type): ?>
                     <option value="<?php echo $type['id']; ?>"
