@@ -7,13 +7,14 @@ if (isset($_GET['id'])) {
     $id = htmlspecialchars($_GET['id']);
 
     if (checkBoatExist($id)) {
+        $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlbmtvbWFuY2Vza2kxMjNAZ21haWwuY29tIiwiaWQiOjE4NywiaWF0IjoxNDc4MDEyNDMxfQ.snQ9PvwVTrsJlNIfi69ZP5flsZe3lntaPCsszAakU9U';
 
         // Get cURL resource
         $curl = curl_init();
         // Set some options - we are passing in a useragent too here
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => 'http://46.101.221.106/api/boat/'.$id.'?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlbmtvbWFuY2Vza2kxMjNAZ21haWwuY29tIiwiaWQiOjE4NywiaWF0IjoxNDc4MDEyNDMxfQ.snQ9PvwVTrsJlNIfi69ZP5flsZe3lntaPCsszAakU9U',
+            CURLOPT_URL => 'http://46.101.221.106/api/boat/' . $id . '?token=' . $token,
             CURLOPT_USERAGENT => 'Sample cURL Boat Request'
         ));
         // Send the request & save response to $resp
@@ -22,21 +23,41 @@ if (isset($_GET['id'])) {
         curl_close($curl);
 
         //    echo gettype(json_decode($resp));
-        $boatInfoObject=(array)json_decode($resp);
+        $boatInfoObject = (object)json_decode($resp);
+//        print_r(gettype($boatInfoObject));
 
-        if (isset($resp)) {
-            var_dump($boatInfoObject);
+        if (isset($boatInfoObject)) {
+            $boatMainDetails = getBoatMainDetails($boatInfoObject);
+            $boatStandarsItems = getBoatStandardItems($boatInfoObject);
+            $boatTypes = getBoatType($boatInfoObject);
+            $boatBuilder = getBoatBuilder($boatInfoObject);
+            $boatStatus = getBoatStatus($boatInfoObject);
+            $boatPhotos = getBoatPhotoss($boatInfoObject);
+            $boatPrice = getBoatPrice($boatInfoObject);
+            $boatLatitude = getBoatLatitude($boatInfoObject);
+            $boatLongitude = getBoatLongitude($boatInfoObject);
+            $boatAddress = getBoatAddress($boatInfoObject);
+            $boatPrimaryPhoto = getBoatPrimaryPhoto($boatInfoObject);
+
+//            echo '<pre>';
+//            print_r($boatTypes);
+//            print_r($boatPrimaryPhoto);
+//            print_r($boatLongitude);
+//            print_r($boatInfoObject);
+//            echo '</pre>';
         }
 
-        $boatInfo = displayBoatInfo($id);
+//        $boatInfo = displayBoatInfo($id);
         //        var_dump($boatInfo);
-        echo "<div class='loginNav col-md-12'></div>";
-        echo "<a href='index.php'><div class='topNav col-md-12'>";
-        echo "<img  src='Goliath.png' />";
-        echo "</div></a>";
+//        echo "<div class='loginNav col-md-12'></div>";
+//        echo "<a href='index.php'><div class='topNav col-md-12'>";
+//        echo "<img  src='Goliath.png' />";
+//        echo "</div></a>";
 
         echo "<div class='container col-md-12'>";
-        echo "<div class='boatContent'><h3 id='title' class='col-md-10'>" . $boatInfo['title'] . "</h3><hr>
+        echo "<div class='boatContent'>
+        
+       <h3 id='title' class='col-md-10'>" . $boatInfo['title'] . "</h3><hr>
 
 	<h3 id='title' class='col-md-10'>
 		Price: " . $boatInfo['price'] . " &euro; <br> <br>
@@ -50,9 +71,10 @@ if (isset($_GET['id'])) {
 				 
 
 				Description: " . $boatInfo['description'] . "</h4></div>";
+
         // echo "<img src='http://46.101.221.106/images/" . $boatInfo['photo_url'] . "' class='boatContent'>";
 
-        getBoatPhotos($_GET['id']);
+//        getBoatPhotos($_GET['id']);
 
         echo "</div>";
         echo "
@@ -129,6 +151,53 @@ if (isset($_GET['id'])) {
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
+
+<div class='loginNav col-md-12'></div>
+<a href='index.php'>
+    <div class='topNav col-md-12'>
+        <img src='Goliath.png'/>
+    </div>
+</a>
+
+<div class='container col-md-12'>
+
+    <!--    Top main div-->
+    <div class="col-md-12">
+        <!--    Main info div-->
+        <div class='boatContent'>
+            <h3 id='title' class='col-md-10'>
+                <?= $boatMainDetails['title']; ?>
+            </h3>
+            <hr>
+            <h3 id='title' class='col-md-10'>
+                Price <?= $boatPrice['value'] . " " . $boatPrice['currency'] ?>
+            </h3>
+            <hr>
+            <h4 class='col-md-10'>
+                Built <?= $boatMainDetails['year']; ?>
+            </h4>
+            <h4 class='col-md-10'>
+                Builder: <?= $boatBuilder; ?>
+            </h4>
+            <h4 class='col-md-10'> Currently lying: ***Country Need to be added***
+                Description: <?= $boatStatus['description']; ?>
+            </h4>
+        </div>
+
+        <!--    Picture div   -->
+        <div class='w3-content w3-display-container slideImages col-md-6'>
+            <?php foreach ($boatPhotos as $url): ?>
+                <img class='mySlides' src="<?= 'http://46.101.221.106/images/' . $url; ?>">
+            <?php endforeach; ?>
+            <a class='w3-btn-floating w3-display-left' onclick='plusDivs(-1)'>&#10094;</a>
+            <a class='w3-btn-floating w3-display-right' onclick='plusDivs(1)'>&#10095;</a>
+        </div>
+    </div>
+
+
+
+</div>
+</div>
 
 
 <div class="foot col-md-12"></div>

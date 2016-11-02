@@ -1,4 +1,4 @@
-<?php 
+<?php
 include "db.php";
 
 // var_dump($_SERVER) ;
@@ -9,7 +9,7 @@ function getRandomBoats()
 {
 
 //    $photoUrl = "http://46.101.221.106/images/";
-    $photoUrl = "http://".$_SERVER['HTTP_HOST']."/images/";
+    $photoUrl = "http://" . $_SERVER['HTTP_HOST'] . "/images/";
 
     $conn = connection();
 
@@ -54,7 +54,7 @@ function getRandomBoats()
         $country = $row['country'];
         $year = $row['year'];
 
-        echo "<a href='http://".$_SERVER['HTTP_HOST']."/boat/boat.php?id=".$id."'>";
+        echo "<a href='http://" . $_SERVER['HTTP_HOST'] . "/boat/boat.php?id=" . $id . "'>";
         echo "<div class='res' id='$id'>";
         echo "<img src='http://46.101.221.106/images/" . $photo . "' class='image-rounded col-md-4' >";
         echo "<h3 id='title' class='col-md-8'>$title</h3>";
@@ -65,20 +65,21 @@ function getRandomBoats()
     $conn = null;
 }
 
-function getBoatPhotos($id){
-	$conn = connection();
-	    $result = $conn->query("select photos.location_filename from photos where photos.boat_id=".$id);
-        echo "<div class='w3-content w3-display-container slideImages col-md-6'>";
+function getBoatPhotos($id)
+{
+    $conn = connection();
+    $result = $conn->query("select photos.location_filename from photos where photos.boat_id=" . $id);
+    echo "<div class='w3-content w3-display-container'>";
 
-	while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
 
         $photo = $row['location_filename'];
         echo "<img class='mySlides' src='http://46.101.221.106/images/" . $photo . "'  class='' style='width:100%' height='400px'>";
     }
- 		echo "
+    echo "
 		<a class='w3-btn-floating w3-display-left' onclick='plusDivs(-1)'>&#10094;</a>
 		<a class='w3-btn-floating w3-display-right' onclick='plusDivs(1)'>&#10095;</a>";
- 		echo "</div>";
+    echo "</div>";
 
     $conn = null;
 }
@@ -101,7 +102,7 @@ function checkBoatExist($checkID)
 function searchBoats()
 {
 //    $photoUrl = "http://46.101.221.106/images/";
-    $photoUrl = "http://".$_SERVER['HTTP_HOST']."/images/";
+    $photoUrl = "http://" . $_SERVER['HTTP_HOST'] . "/images/";
     $conn = connection();
 
     $queryStr = "
@@ -141,13 +142,13 @@ function searchBoats()
         
         ";
 
-    $querySelect="";
-    $queryFrom="";
-    $queryWhere="";
+    $querySelect = "";
+    $queryFrom = "";
+    $queryWhere = "";
 
     // Filter by TYPE
     if ($_POST['boat-type'] != 'all') {
-        echo "|".$_POST['boat-type']."|";
+        echo "|" . $_POST['boat-type'] . "|";
         $queryStr = $queryStr . " AND types.id=" . $_POST['boat-type'];
     }
 
@@ -181,7 +182,7 @@ function searchBoats()
         $queryStr = $queryStr . " AND boat_standard_items.`description` LIKE '%" . $_POST['boat-keyword'] . "%'";
     }
 
-    $queryStr=$queryStr." GROUP BY boats.title";
+    $queryStr = $queryStr . " GROUP BY boats.title";
 
     $result = $conn->query($queryStr);
 
@@ -199,7 +200,7 @@ function searchBoats()
         $description = $row['description'];
 
 
-        echo "<a href='http://".$_SERVER['HTTP_HOST']."/boat/boat.php?id=".$row['id']."'>";
+        echo "<a href='http://" . $_SERVER['HTTP_HOST'] . "/boat/boat.php?id=" . $row['id'] . "'>";
         echo "<div class='res' id='$id'>";
         echo "<div class='col-md-4'><img src='" . $photoUrl . "" . $photo . "' class='image-rounded' height=\"100\" ></div>";
         echo "<h3 id='title' class='col-md-8'>Title: $title</h3>
@@ -248,7 +249,7 @@ function displayBoatInfo($boatID)
         
         INNER JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id
 
-        WHERE boats.id=".$boatID." AND photos.primaryPhoto=1 AND prices.current = 1";
+        WHERE boats.id=" . $boatID . " AND photos.primaryPhoto=1 AND prices.current = 1";
 
     foreach ($conn->query($queryStr) as $row) {
         if ($row['id'] == $boatID) {
@@ -310,4 +311,119 @@ function getBoatYears()
     $conn = null;
 
     return $result;
+}
+
+// Get boat main details
+function getBoatMainDetails($boatInfoObject)
+{
+    $boatMainDetails = get_object_vars($boatInfoObject);
+    return array(
+        'id' => $boatMainDetails['id'],
+        'title' => $boatMainDetails['title'],
+        'clients_id' => $boatMainDetails['clients_id'],
+        'offices_id' => $boatMainDetails['offices_id'],
+        'referer_id' => $boatMainDetails['referer_id'],
+        'boat_name' => $boatMainDetails['boat_name'],
+        'boat_model' => $boatMainDetails['boat_model'],
+        'year' => $boatMainDetails['year'],
+        'notes' => $boatMainDetails['notes'],
+        'notes_nl' => $boatMainDetails['notes_nl'],
+        'builders_id' => $boatMainDetails['builders_id']
+    );
+}
+
+// Get boat types
+function getBoatType($boatInfoObject)
+{
+    $boatMainDetails = get_object_vars($boatInfoObject)['types'];
+    $boatTypes = array();
+    foreach ($boatMainDetails as $typeDetails) {
+        array_push(
+            $boatTypes,
+            array(
+            'id' => get_object_vars($typeDetails)['id'],
+            'type'=>get_object_vars($typeDetails)['type'])
+        );
+    }
+    return $boatTypes;
+}
+
+// Get boat Builder
+function getBoatBuilder($boatInfoObject)
+{
+    $boatMainDetails = get_object_vars($boatInfoObject);
+    return get_object_vars($boatMainDetails['builder'])['name'];
+}
+
+// Get boat Status
+function getBoatStatus($boatInfoObject)
+{
+    $boatMainDetails = get_object_vars($boatInfoObject);
+    return array(
+        'id' => get_object_vars($boatMainDetails['status'])['id'],
+        'description' => get_object_vars($boatMainDetails['status'])['description']
+    );
+}
+
+// Get boat Photo urls
+function getBoatPhotoss($boatInfoObject)
+{
+    $boatMainPhotoDetails = get_object_vars($boatInfoObject)['photos'];
+    $boatPhotoUrls = array();
+    foreach ($boatMainPhotoDetails as $photoDetails) {
+        array_push($boatPhotoUrls, get_object_vars($photoDetails)['location_filename']);
+    }
+    return $boatPhotoUrls;
+}
+
+// Get boat Price
+function getBoatPrice($boatInfoObject)
+{
+    $boatMainDetails = get_object_vars($boatInfoObject);
+    return array(
+        'value' => get_object_vars($boatMainDetails['price'])['value'],
+        'currency' => get_object_vars($boatMainDetails['price'])['currency']
+    );
+}
+
+// Get boat Latitude
+function getBoatLatitude($boatInfoObject)
+{
+    return get_object_vars($boatInfoObject)['latitude'];
+}
+
+// Get boat Longitude
+function getBoatLongitude($boatInfoObject)
+{
+    return get_object_vars($boatInfoObject)['longitude'];
+}
+
+// Get boat Address
+function getBoatAddress($boatInfoObject)
+{
+    return get_object_vars($boatInfoObject)['address'];
+}
+
+// Get boat Primary Photo
+function getBoatPrimaryPhoto($boatInfoObject)
+{
+    $boatMainDetails = get_object_vars($boatInfoObject);
+    return get_object_vars($boatMainDetails['photo'])['location_filename'];
+}
+
+// Get boat standard items details
+function getBoatStandardItems($boatInfoObject)
+{
+    $boatStandarItemsObject = get_object_vars($boatInfoObject)['standardItems'];
+    $boatStandardItems = array();
+    foreach ($boatStandarItemsObject as $bsd) {
+        foreach ($bsd as $intoBsd) {
+            array_push(
+                $boatStandardItems,
+                array('name' => get_object_vars(get_object_vars($intoBsd)['standard_item'])['name'],
+                    'value' => get_object_vars($intoBsd)['value'],
+                    'description' => get_object_vars($intoBsd)['description']));
+        }
+    }
+    return $boatStandardItems;
 }

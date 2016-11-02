@@ -153,3 +153,9 @@ a:hover {
 	height: 50px;
     background-color: #004230;	
 }
+
+.mySlides {
+    height: 400px;
+    display: inherit;
+    width: 100%;
+}
