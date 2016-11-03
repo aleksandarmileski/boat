@@ -191,7 +191,7 @@ if (isset($_GET['id'])) {
 
 <div class="foot col-md-12"></div>
 <div class="footer col-md-12"></div>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9bH-Sm8GcdTis9CeqkT4e1vi9JVMIyrU&callback=initMap"
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaNqbKJHOH8gawJ1E6pbVsLHA7g5jcPsM&callback=initMap"
         async defer></script>
 <script src="https://code.jquery.com/jquery-3.1.1.js"
         integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="

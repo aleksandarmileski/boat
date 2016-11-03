@@ -50,20 +50,20 @@ require "functions.php";
 
             <!--boat size-->
             <label for="size-from">Boat size:</label><br>
-            <input type="text" id="size-from" class="form-control textinput input" name="size-from" value="0">
+            <input type="text" id="size-from" class="form-control textinput input" name="size-from" value="">
 
 
             <label for="size-to">to</label>
-            <input type="text" id="size-to" class="form-control textinput input" name="size-to" value="0">
+            <input type="text" id="size-to" class="form-control textinput input" name="size-to" value="">
             <label>ft</label>
             <br><br>
 
             <!--boat price-->
             <label>Price</label><br>
             <label for="price-from">&euro;</label><br>
-            <input type="text" id="price-from" class="form-control textinput input" name="price-from" value="0">
+            <input type="text" id="price-from" class="form-control textinput input" name="price-from" value="">
             <label for="price-to">to</label><br>
-            <input type="text" id="price-to" class="form-control textinput input" name="price-to" value="13000">
+            <input type="text" id="price-to" class="form-control textinput input" name="price-to" value="">
             <br>
 
             <div id="additional" class="invisible">
@@ -73,7 +73,7 @@ require "functions.php";
                 <input type="text" id="boat-keyword" class="form-control input" name="boat-keyword"><br>
 
                 <!--boat builders-->
-                <label for="boat-type">Select boat builder</label><br>
+                <label for="boat-builder">Select boat builder</label><br>
                 <select id="boat-builder" class="form-control input" name="boat-builder">
                     <option value="all">All boats</option>
                     <?php
@@ -120,7 +120,8 @@ require "functions.php";
     <div class="div2 col-xs-6">
         <?php
         if (isset($_POST['search'])) {
-            searchBoats();
+//            searchBoats();
+            findBoats();
         } else {
             getRandomBoats();
         }
