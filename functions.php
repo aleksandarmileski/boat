@@ -1,15 +1,12 @@
 <?php
 include "db.php";
 
-// var_dump($_SERVER) ;
-
-
 // Return random boats
 function getRandomBoats()
 {
 
-//    $photoUrl = "http://46.101.221.106/images/";
-    $photoUrl = "http://" . $_SERVER['HTTP_HOST'] . "/images/";
+    $photoUrl = "http://46.101.221.106/images/";
+//    $photoUrl = "http://" . $_SERVER['HTTP_HOST'] . "/images/";
 
     $conn = connection();
 
@@ -65,44 +62,11 @@ function getRandomBoats()
     $conn = null;
 }
 
-function getBoatPhotos($id)
-{
-    $conn = connection();
-    $result = $conn->query("select photos.location_filename from photos where photos.boat_id=" . $id);
-    echo "<div class='w3-content w3-display-container'>";
-
-    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-
-        $photo = $row['location_filename'];
-        echo "<img class='mySlides' src='http://46.101.221.106/images/" . $photo . "'  class='' style='width:100%' height='400px'>";
-    }
-    echo "
-		<a class='w3-btn-floating w3-display-left' onclick='plusDivs(-1)'>&#10094;</a>
-		<a class='w3-btn-floating w3-display-right' onclick='plusDivs(1)'>&#10095;</a>";
-    echo "</div>";
-
-    $conn = null;
-}
-
-// Check if boat exists
-function checkBoatExist($checkID)
-{
-    $conn = connection();
-    foreach ($conn->query("SELECT * FROM boats") as $row) {
-        if ($row['id'] == $checkID) {
-            $conn = null;
-            return $row;
-        }
-    }
-    $conn = null;
-    return false;
-}
-
 // Return boats
 function searchBoats()
 {
-//    $photoUrl = "http://46.101.221.106/images/";
-    $photoUrl = "http://" . $_SERVER['HTTP_HOST'] . "/images/";
+    $photoUrl = "http://46.101.221.106/images/";
+//    $photoUrl = "http://" . $_SERVER['HTTP_HOST'] . "/images/";
     $conn = connection();
 
     $queryStr = "
@@ -218,41 +182,11 @@ function searchBoats()
 }
 
 // Check if boat exists
-function displayBoatInfo($boatID)
+function checkBoatExist($checkID)
 {
     $conn = connection();
-    $queryStr = "
-        SELECT boats.id as id, boats.title as title, 
-            
-            photos.location_filename as photo_url, 
-            
-            prices.value as price, 
-            
-            builders.name as builder, 
-            
-            boat_locations.country as country,
-            
-            boat_standard_items.value as boat_size,            
-            boat_standard_items.description as description,
-            
-            boats.year as year
-
-        FROM boats
-
-        INNER JOIN photos ON boats.id=photos.boat_id
-        
-        INNER JOIN prices ON boats.id=prices.boat_id
-        
-        LEFT JOIN builders ON boats.builders_id=builders.id
-        
-        INNER JOIN boat_locations ON boats.id=boat_locations.boat_id
-        
-        INNER JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id
-
-        WHERE boats.id=" . $boatID . " AND photos.primaryPhoto=1 AND prices.current = 1";
-
-    foreach ($conn->query($queryStr) as $row) {
-        if ($row['id'] == $boatID) {
+    foreach ($conn->query("SELECT * FROM boats") as $row) {
+        if ($row['id'] == $checkID) {
             $conn = null;
             return $row;
         }
@@ -341,8 +275,8 @@ function getBoatType($boatInfoObject)
         array_push(
             $boatTypes,
             array(
-            'id' => get_object_vars($typeDetails)['id'],
-            'type'=>get_object_vars($typeDetails)['type'])
+                'id' => get_object_vars($typeDetails)['id'],
+                'type' => get_object_vars($typeDetails)['type'])
         );
     }
     return $boatTypes;
@@ -366,7 +300,7 @@ function getBoatStatus($boatInfoObject)
 }
 
 // Get boat Photo urls
-function getBoatPhotoss($boatInfoObject)
+function getBoatPhotos($boatInfoObject)
 {
     $boatMainPhotoDetails = get_object_vars($boatInfoObject)['photos'];
     $boatPhotoUrls = array();
@@ -426,4 +360,25 @@ function getBoatStandardItems($boatInfoObject)
         }
     }
     return $boatStandardItems;
+}
+
+function getBoatDataObject($id)
+{
+    $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlbmtvbWFuY2Vza2kxMjNAZ21haWwuY29tIiwiaWQiOjE4NywiaWF0IjoxNDc4MDEyNDMxfQ.snQ9PvwVTrsJlNIfi69ZP5flsZe3lntaPCsszAakU9U';
+
+    // Get cURL resource
+    $curl = curl_init();
+    // Set some options - we are passing in a useragent too here
+    curl_setopt_array($curl, array(
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_URL => 'http://46.101.221.106/api/boat/' . $id . '?token=' . $token ,
+        CURLOPT_USERAGENT => 'Sample cURL Boat Request'
+    ));
+    // Send the request & save response to $resp
+    $resp = curl_exec($curl);
+    // Close request to clear up some resources
+    curl_close($curl);
+    //    echo gettype(json_decode($resp));
+
+    return (object)json_decode($resp);
 }

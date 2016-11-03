@@ -1,31 +1,35 @@
-$( document ).ready(function() {
-    $( "#sh" ).on('click',function(){
-        if ($( "#sh" ).text()=="Show aditional search properties") {
-            $( "#sh" ).text("Hide aditional search properties");
-        }else{
-            $( "#sh" ).text("Show aditional search properties");
+$(document).ready(function () {
+    $("#sh").on('click', function () {
+        if ($("#sh").text() == "Show aditional search properties") {
+            $("#sh").text("Hide aditional search properties");
+        } else {
+            $("#sh").text("Show aditional search properties");
         }
-        $( "#additional" ).toggleClass( "invisible" );
+        $("#additional").toggleClass("invisible");
     });
-    $("#getInfo").submit(function(e){
-        e.preventDefault();
-    });
+
 });
 
-var slideIndex = 1;
-showDivs(slideIndex);
+$("#getInfo").submit(function (e) {
+    e.preventDefault();
+});
 
-function plusDivs(n) {
-  showDivs(slideIndex += n);
+var map;
+var latitude=Number(latitude);
+var longitude=Number(longitude);
+// console.log(typeof Number(latitude)+" "+latitude+" "+ typeof Number(longitude)+" "+longitude);
+// icon: "http://www.vertex.com.mk/img/logo_enterprise.png"
+
+function initMap() {
+    var location = {lat: latitude, lng: longitude};
+
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: location,
+        zoom: 8
+    });
+    var marker = new google.maps.Marker({
+        position: location,
+        map: map
+    });
 }
 
-function showDivs(n) {
-  var i;
-  var x = document.getElementsByClassName("mySlides");
-  if (n > x.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = x.length}
-  for (i = 0; i < x.length; i++) {
-     x[i].style.display = "none";
-  }
-  x[slideIndex-1].style.display = "block";
-}

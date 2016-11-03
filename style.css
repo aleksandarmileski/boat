@@ -69,8 +69,9 @@ p {
 
 h3 {
     float: left;
-    margin-top: 5px;
+    margin-top: 15px;
     color: #004237;
+    background-color: #94cdba;
 }
 
 h4 {
@@ -157,5 +158,21 @@ a:hover {
 .mySlides {
     height: 400px;
     display: inherit;
+    width: 100%;
+}
+
+tbody tr:hover {
+    font-weight: bold;
+    background-color: #94cdba;
+}
+
+.sArea button {
+    background-color: #94cdba;
+}
+
+/* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+#map {
+    height: 500px;
     width: 100%;
 }
