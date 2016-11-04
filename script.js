@@ -43,10 +43,12 @@ $("#getContactInfo").on('submit', function (e) {
     $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlbmtvbWFuY2Vza2kxMjNAZ21haWwuY29tIiwiaWQiOjE4NywiaWF0IjoxNDc4MDEyNDMxfQ.snQ9PvwVTrsJlNIfi69ZP5flsZe3lntaPCsszAakU9U';
     $.ajax({
         type: 'POST',
-        dataType: 'jsonp',
-        url: 'http://46.101.221.106/api/inquiries',
-        data: {
-            'token': $token,
+        crossDomain: true,
+        dataType: 'json',
+        contentType: "application/json",
+        url: 'http://46.101.221.106/api/inquiry?token='+$token,
+        data: JSON.stringify({
+            
             'boat_id': boat_id,
             'broker_id': brokers_id,
             'name': $name,
@@ -54,9 +56,9 @@ $("#getContactInfo").on('submit', function (e) {
             'contactNumber': $phone,
             'preferredMethod': $options,
             'notes': $notes
-        },
+        }),
         success: function (msg) {
-            console.log('wow');
+            console.log("Success");
         }
     });
 });

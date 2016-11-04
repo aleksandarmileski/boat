@@ -13,18 +13,22 @@ if (isset($_GET['id'])) {
         if (isset($boatInfoObject)) {
             $boatMainDetails = getBoatMainDetails($boatInfoObject);
             $boatStandarsItems = getBoatStandardItems($boatInfoObject);
+            $boatStandarsItemsCategory = getBoatStandardItemsCategories();
             $boatTypes = getBoatType($boatInfoObject);
             $boatBuilder = getBoatBuilder($boatInfoObject);
             $boatStatus = getBoatStatus($boatInfoObject);
             $boatPhotos = getBoatPhotos($boatInfoObject);
             $boatPrice = getBoatPrice($boatInfoObject);
+            $boatCountry = getBoatCountry($id);
             $boatLatitude = getBoatLatitude($boatInfoObject);
             $boatLongitude = getBoatLongitude($boatInfoObject);
             $boatAddress = getBoatAddress($boatInfoObject);
             $boatPrimaryPhoto = getBoatPrimaryPhoto($boatInfoObject);
 
+
 //            echo '<pre>';
 //            print_r($boatStandarsItems);
+//            print_r($boatStandarsItemsCategory);
 //            print_r($boatPrimaryPhoto);
 //            print_r($boatLongitude);
 //            print_r($boatInfoObject);
@@ -82,9 +86,8 @@ if (isset($_GET['id'])) {
             <h4 class='col-md-10'>
                 Builder: <?= $boatBuilder; ?>
             </h4>
-            <h4 class='col-md-10'> Currently lying: ***Country Need to be added***
-                Description: <?= $boatStatus['description']; ?>
-            </h4>
+            <h4 class='col-md-10'> Country: <?= $boatCountry[0]['country']; ?></h4>
+            <h4 class='col-md-10'> Description: <?= $boatStatus['description']; ?></h4>
         </div>
 
         <!--    Picture div   -->
@@ -101,24 +104,21 @@ if (isset($_GET['id'])) {
     <div class="col-md-12">
         <hr>
         <h3 class="text-center col-md-12">Boat Standard Items</h3>
-        <table class="table">
-            <thead>
-            <tr>
-                <th class="col-md-4">Name</th>
-                <th class="col-md-2">Value</th>
-                <th class="col-md-6">Description</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($boatStandarsItems as $bsi): ?>
-                <tr>
-                    <td><?= $bsi['name']; ?></td>
-                    <td><?= $bsi['value']; ?></td>
-                    <td><?= $bsi['description']; ?></td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
+        <?php if(count($boatStandarsItems)==0) : ?>
+            <p class="text-center col-md-12"> --- There is no data about Standard Items --- </p>
+        <?php endif; ?>
+        <?php foreach ($boatStandarsItems as $boatStandarsItemsCatgeoryID => $boatStandarsItemsDetails): ?>
+            <div class="col-md-4">
+                <h3 class="text-center col-md-12"><?php if ($boatStandarsItemsCatgeoryID != 'null') {
+                        echo ($boatStandarsItemsCategory[$boatStandarsItemsCatgeoryID]);
+                    } else {
+                        echo 'No specified category';
+                    }; ?></h3>
+                <?php foreach ($boatStandarsItemsDetails as $boatStandarsItems): ?>
+                    <p class="col-md-12"><?= $boatStandarsItems['name']; ?>: <?= $boatStandarsItems['value']; ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endforeach; ?>
     </div>
 
     <!--    Contact div-->
@@ -173,12 +173,12 @@ if (isset($_GET['id'])) {
     <div class="col-md-12">
         <hr>
         <h3 class="text-center col-md-12">Boat Map</h3>
-        <div id="map" ></div>
+        <div id="map"></div>
         <script>
             var latitude = "<?=$boatLatitude; ?>";
             var longitude = "<?=$boatLongitude; ?>";
-            var boat_id= "<?=$boatMainDetails['id']; ?>";
-            var brokers_id= "<?=$boatMainDetails['brokers_id']; ?>";
+            var boat_id = "<?=$boatMainDetails['id']; ?>";
+            var brokers_id = "<?=$boatMainDetails['brokers_id']; ?>";
         </script>
     </div>
 </div>
@@ -192,7 +192,7 @@ if (isset($_GET['id'])) {
 
 <div class="foot col-md-12"></div>
 <div class="footer col-md-12"></div>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaNqbKJHOH8gawJ1E6pbVsLHA7g5jcPsM&callback=initMap"
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBusPgYdcaTfv_8qyYEgqOmKzy-SgVZX2M&callback=initMap"
         async defer></script>
 <script src="https://code.jquery.com/jquery-3.1.1.js"
         integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="

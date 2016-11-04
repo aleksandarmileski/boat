@@ -1,7 +1,6 @@
 <?php
+session_start();
 require "functions.php";
-
-//echo "Your ip is: ".$_SERVER['REMOTE_ADDR'];
 
 ?>
 <!DOCTYPE html>
@@ -40,7 +39,11 @@ require "functions.php";
                     <option value="<?php echo $type['id']; ?>"
                             name="<?php echo $type['type']; ?>"
                             id="<?php echo $type['id']; ?>"
-                        <?php if(isset($_POST['boat-type'])&&$_POST['boat-type']==$type['id']){echo 'selected';}?>
+                        <?php if ((isset($_POST['boat-type']) && ($_POST['boat-type'] == $type['id']))
+                            || (isset($_SESSION['boat-type']) && ($_SESSION['boat-type'] == $type['id']))
+                        ) {
+                            echo 'selected';
+                        } ?>
                     >
                         <?php echo $type['type']; ?>
                     </option>
@@ -50,7 +53,14 @@ require "functions.php";
 
             <!--boat size-->
             <label for="size-from">Boat size:</label><br>
-            <input type="text" id="size-from" class="form-control textinput input" name="size-from" value="">
+            <input type="text" id="size-from" class="form-control textinput input"
+                   name="size-from" <?php if ((isset($_POST['size-from']) && ($_POST['size-from'] == $type['id']))
+                || (isset($_SESSION['size-from']) && ($_SESSION['size-from'] == $type['id']))
+            ) {
+                if(isset($_POST['size-from'])){ echo "value=".$_POST['size-from'] ; }
+                elseif (isset($_SESSION['size-from'])){echo "value=".$_SESSION['size-from'];}
+                else{echo "value=0";}
+            } ?>>
 
 
             <label for="size-to">to</label>
