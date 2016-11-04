@@ -1,7 +1,6 @@
 <?php
 require "functions.php";
 
-
 if (isset($_GET['id'])) {
 //    echo "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
     $id = htmlspecialchars($_GET['id']);
@@ -136,26 +135,26 @@ if (isset($_GET['id'])) {
             <hr>
         </div>
         <div class='col-md-12'>
-            <form id='getInfo' action=''>
+            <form id='getContactInfo' action=''>
                 <div class='form-group col-md-12'>
                     <label for='name'>Your name:</label>
-                    <input class='form-control' id='name' type='text'>
+                    <input class='form-control' id='name' type='text' required>
                 </div>
                 <div class='form-group col-md-12'>
                     <label for='email'>Your email address:</label>
-                    <input class='form-control' id='email' type='text'>
+                    <input class='form-control' id='email' type='text' required>
                 </div>
                 <div class='form-group col-md-12'>
                     <label for='phone'>Phone number:</label>
-                    <input class='form-control' id='phone' type='text'>
+                    <input class='form-control' id='phone' type='text' required>
                 </div>
                 <label for='options' class='col-md-10'>Preferred contact method:</label>
                 <div class='col-md-10'>
                     <label class='col-md-10'>
-                        <input type='radio' name='options' checked>phone
+                        <input type='radio' name='options' value="phone">phone
                     </label>
                     <label class='col-md-10'>
-                        <input type='radio' name='options'>e-mail
+                        <input type='radio' name='options' value="e-mail" checked>e-mail
                     </label>
                 </div>
                 <div class='form-group col-md-12'>
@@ -178,6 +177,8 @@ if (isset($_GET['id'])) {
         <script>
             var latitude = "<?=$boatLatitude; ?>";
             var longitude = "<?=$boatLongitude; ?>";
+            var boat_id= "<?=$boatMainDetails['id']; ?>";
+            var brokers_id= "<?=$boatMainDetails['brokers_id']; ?>";
         </script>
     </div>
 </div>

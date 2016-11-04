@@ -265,6 +265,7 @@ function getBoatMainDetails($boatInfoObject)
         'id' => $boatMainDetails['id'],
         'title' => $boatMainDetails['title'],
         'clients_id' => $boatMainDetails['clients_id'],
+        'brokers_id' => $boatMainDetails['brokers_id'],
         'offices_id' => $boatMainDetails['offices_id'],
         'referer_id' => $boatMainDetails['referer_id'],
         'boat_name' => $boatMainDetails['boat_name'],
@@ -375,13 +376,13 @@ function getBoatStandardItems($boatInfoObject)
 function getBoatDataObject($id)
 {
     $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlbmtvbWFuY2Vza2kxMjNAZ21haWwuY29tIiwiaWQiOjE4NywiaWF0IjoxNDc4MDEyNDMxfQ.snQ9PvwVTrsJlNIfi69ZP5flsZe3lntaPCsszAakU9U';
-
+    $ip=$_SERVER['REMOTE_ADDR'];
     // Get cURL resource
     $curl = curl_init();
     // Set some options - we are passing in a useragent too here
     curl_setopt_array($curl, array(
         CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_URL => 'http://46.101.221.106/api/boat/' . $id . '?token=' . $token,
+        CURLOPT_URL => 'http://46.101.221.106/api/boat/' . $id . '?token=' . $token.'&ip='.$ip,
         CURLOPT_USERAGENT => 'Sample cURL Boat Request'
     ));
     // Send the request & save response to $resp
