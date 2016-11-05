@@ -54,13 +54,7 @@ require "functions.php";
             <!--boat size-->
             <label for="size-from">Boat size:</label><br>
             <input type="text" id="size-from" class="form-control textinput input"
-                   name="size-from" <?php if ((isset($_POST['size-from']) && ($_POST['size-from'] == $type['id']))
-                || (isset($_SESSION['size-from']) && ($_SESSION['size-from'] == $type['id']))
-            ) {
-                if(isset($_POST['size-from'])){ echo "value=".$_POST['size-from'] ; }
-                elseif (isset($_SESSION['size-from'])){echo "value=".$_SESSION['size-from'];}
-                else{echo "value=0";}
-            } ?>>
+                   name="size-from" >
 
 
             <label for="size-to">to</label>

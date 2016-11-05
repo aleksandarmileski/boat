@@ -1,6 +1,7 @@
 <?php
 require "functions.php";
 
+
 if (isset($_GET['id'])) {
 //    echo "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
     $id = htmlspecialchars($_GET['id']);
@@ -39,9 +40,13 @@ if (isset($_GET['id'])) {
     } else {
         header("Location: http://" . $_SERVER["HTTP_HOST"] . "/boat/");
     }
+    if (isset($_POST['submitInfo'])) {
+        getInfo($_POST, $boatMainDetails['id'], $boatMainDetails['brokers_id']);
+    }
 } else {
     header("Location: http://" . $_SERVER["HTTP_HOST"] . "/boat/");
 }
+
 
 ?>
 
@@ -104,13 +109,13 @@ if (isset($_GET['id'])) {
     <div class="col-md-12">
         <hr>
         <h3 class="text-center col-md-12">Boat Standard Items</h3>
-        <?php if(count($boatStandarsItems)==0) : ?>
+        <?php if (count($boatStandarsItems) == 0) : ?>
             <p class="text-center col-md-12"> --- There is no data about Standard Items --- </p>
         <?php endif; ?>
         <?php foreach ($boatStandarsItems as $boatStandarsItemsCatgeoryID => $boatStandarsItemsDetails): ?>
             <div class="col-md-4">
                 <h3 class="text-center col-md-12"><?php if ($boatStandarsItemsCatgeoryID != 'null') {
-                        echo ($boatStandarsItemsCategory[$boatStandarsItemsCatgeoryID]);
+                        echo($boatStandarsItemsCategory[$boatStandarsItemsCatgeoryID]);
                     } else {
                         echo 'No specified category';
                     }; ?></h3>
@@ -135,18 +140,18 @@ if (isset($_GET['id'])) {
             <hr>
         </div>
         <div class='col-md-12'>
-            <form id='getContactInfo' action=''>
+            <form id='getContactInfo' action='' method="post">
                 <div class='form-group col-md-12'>
                     <label for='name'>Your name:</label>
-                    <input class='form-control' id='name' type='text' required>
+                    <input class='form-control' id='name' name="name" type='text' required>
                 </div>
                 <div class='form-group col-md-12'>
                     <label for='email'>Your email address:</label>
-                    <input class='form-control' id='email' type='text' required>
+                    <input class='form-control' id='email' name="email" type='text' required>
                 </div>
                 <div class='form-group col-md-12'>
                     <label for='phone'>Phone number:</label>
-                    <input class='form-control' id='phone' type='text' required>
+                    <input class='form-control' id='phone' name="phone" type='text' required>
                 </div>
                 <label for='options' class='col-md-10'>Preferred contact method:</label>
                 <div class='col-md-10'>
@@ -159,11 +164,11 @@ if (isset($_GET['id'])) {
                 </div>
                 <div class='form-group col-md-12'>
                     <label for='notes'>Notes:</label>
-                    <textarea class='form-control' id='notes' rows='5'></textarea>
+                    <textarea class='form-control' id='notes' name="notes" rows='5'></textarea>
                 </div>
 
                 <div class='sArea col-md-12'>
-                    <button type='submit' id='submitInfo' class="btn col-md-4">Send enquiry</button>
+                    <button type='submit' id='submitInfo' name="submitInfo" class="btn col-md-4">Send enquiry</button>
                 </div>
             </form>
         </div>

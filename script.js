@@ -31,7 +31,6 @@ function initMap() {
 // Send contact form data
 $("#getContactInfo").on('submit', function (e) {
 
-    e.preventDefault();
 
     $name = $("#name").val();
     $email = $("#email").val();
@@ -40,25 +39,28 @@ $("#getContactInfo").on('submit', function (e) {
     $notes = $("#notes").val();
     console.log($name + " " + typeof $email + " " + typeof $phone + " " + typeof $options + " " + $notes + " " + brokers_id + " " + boat_id);
 
-    $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlbmtvbWFuY2Vza2kxMjNAZ21haWwuY29tIiwiaWQiOjE4NywiaWF0IjoxNDc4MDEyNDMxfQ.snQ9PvwVTrsJlNIfi69ZP5flsZe3lntaPCsszAakU9U';
     $.ajax({
-        type: 'POST',
-        crossDomain: true,
-        dataType: 'json',
-        contentType: "application/json",
-        url: 'http://46.101.221.106/api/inquiry?token='+$token,
-        data: JSON.stringify({
-            
-            'boat_id': boat_id,
-            'broker_id': brokers_id,
-            'name': $name,
-            'email': $email,
-            'contactNumber': $phone,
-            'preferredMethod': $options,
-            'notes': $notes
-        }),
-        success: function (msg) {
+        url: "boat.php?id=" + boat_id,
+        type: "POST",
+        data: {
+            "submitInfo": "",
+            "boat_id": boat_id,
+            "broker_id": brokers_id,
+            "name": $name,
+            "email": $email,
+            "phone": $phone,
+            "options": $options,
+            "notes": $notes
+        },
+        success: function (data, status) {
             console.log("Success");
+        },
+        error: function (xhr, desc, err) {
+            console.log("error");
+
         }
     });
+    e.preventDefault();
+
+
 });
