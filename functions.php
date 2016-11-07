@@ -73,7 +73,9 @@ function findBoats()
               prices.value as price,
               builders.name AS builder,
               boats.year as year,
-              boat_locations.country as country
+              boat_locations.country as country,
+              boat_standard_items.value as boat_size,
+              boat_standard_items.description as description
      FROM boats        
         LEFT JOIN boat_types ON boats.id=boat_types.boat_id
         LEFT JOIN types ON boat_types.type_id=types.id           
@@ -81,74 +83,62 @@ function findBoats()
         INNER JOIN prices ON boats.id=prices.boat_id        
         INNER JOIN builders ON boats.builders_id=builders.id        
         INNER JOIN boat_locations ON boats.id=boat_locations.boat_id 
-     WHERE prices.current=1 ";
-//    ,
-//    boat_standard_items.value as boat_size,
-//              boat_standard_items.description as description
-//    LEFT JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id
+        LEFT JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id
+     WHERE prices.current=1 
+        AND boat_standard_items.`standard_item_id`=68";
+
 
     // Filter by TYPE
     if ($_POST['boat-type'] != 'all') {
 //        echo "|" . $_POST['boat-type'] . "|";
-        $_SESSION['boat-type'] = $_POST['boat-type'];
         $queryStr = $queryStr . " AND types.id=" . $_POST['boat-type'] . " ";
     }
 
-//    // Filter by BOAT SIZE
-//    if ($_POST['size-from'] != '' || $_POST['size-to'] != '') {
-//        if ($_POST['size-from'] != '') {
-//            echo $_POST['size-from'];
-//            $_SESSION['size-from'] = $_POST['size-from'];
-//            $queryStr = $queryStr . " AND boat_standard_items.`value` >=" . $_POST['size-from'] . " ";
-//        }
-//        if ($_POST['size-to'] != '') {
-//            echo $_POST['size-to'];
-//            $_SESSION['size-to'] = $_POST['size-to'];
-//            $queryStr = $queryStr . " AND boat_standard_items.`value` <=" . $_POST['size-to'] . " ";
-//        }
-////        echo $_POST['size-from'] . " - " . $_POST['size-to'];
-//    }
+    // Filter by BOAT SIZE
+    if ($_POST['size-from'] != '' || $_POST['size-to'] != '') {
+        if ($_POST['size-from'] != '') {
+            $queryStr = $queryStr . " AND boat_standard_items.`value` >=" . $_POST['size-from'] . " ";
+        }
+        if ($_POST['size-to'] != '') {
+            $queryStr = $queryStr . " AND boat_standard_items.`value` <=" . $_POST['size-to'] . " ";
+        }
+//        echo "|" . $_POST['size-from'] . " - " . $_POST['size-to']. "|";
+    }
 
     // Filter by PRICE
     if ($_POST['price-from'] != '' || $_POST['price-to'] != '') {
         if ($_POST['price-from'] != '') {
-            $_SESSION['price-from'] = $_POST['price-from'];
             $queryStr = $queryStr . " AND prices.`value` >=" . $_POST['price-from'] . " ";
         }
         if ($_POST['price-to'] != '') {
-            $_SESSION['price-to'] = $_POST['price-to'];
             $queryStr = $queryStr . " AND prices.`value` <=" . $_POST['price-to'] . " ";
         }
-//        echo $_POST['price-from'] . " - " . $_POST['price-to'];
+//        echo "|" .$_POST['price-from'] . " - " . $_POST['price-to']. "|";
     }
 
     // Filter by BUILDER
     if ($_POST['boat-builder'] != 'all') {
-//        echo $_POST['boat-builder'];
-        $_SESSION['boat-builder'] = $_POST['boat-builder'];
+//        echo "|" .$_POST['boat-builder']. "|";
         $queryStr = $queryStr . " AND builders.`name`='" . $_POST['boat-builder'] . "'";
     }
 
     // Filter by COUNTRY
     if ($_POST['boat-country'] != 'all') {
-//        echo $_POST['boat-country'];
-        $_SESSION['boat-country'] = $_POST['boat-country'];
+//        echo "|" .$_POST['boat-country']. "|";
         $queryStr = $queryStr . " AND boat_locations.`country`='" . $_POST['boat-country'] . "'";
     }
 
     // Filter by built YEAR
     if ($_POST['boat-year'] != 'all') {
-//        echo $_POST['boat-year'];
-        $_SESSION['boat-year'] = $_POST['boat-year'];
+//        echo "|" .$_POST['boat-year']. "|";
         $queryStr = $queryStr . " AND boats.`year`>='" . $_POST['boat-year'] . "'";
     }
 
-//    // Filter by KEYWORD
-//    if ($_POST['boat-keyword'] != '') {
-////        echo $_POST['boat-keyword'];
-//        $_SESSION['boat-keyword'] = $_POST['boat-keyword'];
-//        $queryStr = $queryStr . " AND boat_standard_items.`description` LIKE '%" . $_POST['boat-keyword'] . "%'";
-//    }
+    // Filter by KEYWORD
+    if ($_POST['boat-keyword'] != '') {
+//        echo "|" .$_POST['boat-keyword']. "|";
+        $queryStr = $queryStr . " AND boat_standard_items.`description` LIKE '%" . $_POST['boat-keyword'] . "%'";
+    }
 
     $queryStr = $queryStr . " GROUP BY boats.id LIMIT 100";
 
@@ -165,8 +155,8 @@ function findBoats()
         $builder = $row['builder'];
         $year = $row['year'];
         $country = $row['country'];
-//        $description = $row['description'];
-//        $boat_size = $row['boat_size'];
+        $description = $row['description'];
+        $boat_size = $row['boat_size'];
 
         echo "<a href='http://" . $_SERVER['HTTP_HOST'] . "/boat/boat.php?id=" . $row['id'] . "'>";
         echo "<div class='res' id='$id'>";
@@ -177,14 +167,14 @@ function findBoats()
             Builder: $builder, 
             Country: $country, 
             Boat year: $year,</h4>";
-//        echo "<h4 class='col-md-8'>
-//            Boat size: $boat_size ft,
-//            Description: $description</h4>";
+        echo "<h4 class='col-md-8'>
+            Boat size: $boat_size ft,
+            Description: $description</h4>";
         echo "</div>";
         echo "</a>";
 
     }
-    echo "Br. boats: " + $brBoats;
+    echo "Number of search results: " . $brBoats;
     $conn = null;
 
 }

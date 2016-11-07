@@ -2,6 +2,18 @@
 session_start();
 require "functions.php";
 
+if (isset($_POST['search'])){
+    $_SESSION['boat-type']=$_POST['boat-type'];
+    $_SESSION['size-from']=$_POST['size-from'];
+    $_SESSION['size-to']=$_POST['size-to'];
+    $_SESSION['price-from']=$_POST['price-from'];
+    $_SESSION['price-to']=$_POST['price-to'];
+    $_SESSION['boat-keyword']=$_POST['boat-keyword'];
+    $_SESSION['boat-builder']=$_POST['boat-builder'];
+    $_SESSION['boat-country']=$_POST['boat-country'];
+    $_SESSION['boat-year']=$_POST['boat-year'];
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +40,7 @@ require "functions.php";
         <form method="post" class="form-horizontal col-md-10">
 
             <!--boat types-->
-            <label for="boat-type">Select boat type</label><br>
+            <label for="boat-type">Boat type:</label><br>
 
             <select id="boat-type" class="form-control input" name="boat-type">
                 <option value="all">All boats</option>
@@ -39,12 +51,7 @@ require "functions.php";
                     <option value="<?php echo $type['id']; ?>"
                             name="<?php echo $type['type']; ?>"
                             id="<?php echo $type['id']; ?>"
-                        <?php if ((isset($_POST['boat-type']) && ($_POST['boat-type'] == $type['id']))
-                            || (isset($_SESSION['boat-type']) && ($_SESSION['boat-type'] == $type['id']))
-                        ) {
-                            echo 'selected';
-                        } ?>
-                    >
+                            <?php if(isset($_SESSION['boat-type'])&&($type['id']==$_SESSION['boat-type'])) {echo 'selected';} ?> >
                         <?php echo $type['type']; ?>
                     </option>
                 <?php endforeach; ?>
@@ -53,64 +60,79 @@ require "functions.php";
 
             <!--boat size-->
             <label for="size-from">Boat size:</label><br>
-            <input type="text" id="size-from" class="form-control textinput input"
-                   name="size-from" >
+            <input type="number" min="0" step="50" name="size-from" id="size-from"
+                   value=<?php if(isset($_SESSION['size-from'])) {echo $_SESSION['size-from'];} else{echo 50;} ?>
+                   class="form-control textinput input">
 
 
             <label for="size-to">to</label>
-            <input type="text" id="size-to" class="form-control textinput input" name="size-to" value="">
+            <input type="number" step="50" id="size-to" min="0" name="size-to"
+                   value=<?php if(isset($_SESSION['size-to'])) {echo $_SESSION['size-to'];} else{echo 1500;} ?>
+                   class="form-control textinput input">
             <label>ft</label>
             <br><br>
 
             <!--boat price-->
             <label>Price</label><br>
             <label for="price-from">&euro;</label><br>
-            <input type="text" id="price-from" class="form-control textinput input" name="price-from" value="">
+            <input type="number" step="100" id="price-from" name="price-from" min="0"
+                   value=<?php if(isset($_SESSION['price-from'])) {echo $_SESSION['price-from'];} else{echo 0;} ?>
+                   class="form-control textinput input">
             <label for="price-to">to</label><br>
-            <input type="text" id="price-to" class="form-control textinput input" name="price-to" value="">
+            <input type="number" step="100" id="price-to" name="price-to" min="0"
+                   value=<?php if(isset($_SESSION['price-to'])) {echo $_SESSION['price-to'];} else{echo 15000;} ?>
+                   class="form-control textinput input">
             <br>
 
             <div id="additional" class="invisible">
                 <hr>
                 <!--keyword-->
                 <label for="boat-keyword">Keywords: </label><br>
-                <input type="text" id="boat-keyword" class="form-control input" name="boat-keyword"><br>
+                <input type="text" id="boat-keyword" class="form-control input" name="boat-keyword"
+                       value=<?php if(isset($_SESSION['boat-keyword'])) {echo $_SESSION['boat-keyword'];} ?>
+                ><br>
 
                 <!--boat builders-->
-                <label for="boat-builder">Select boat builder</label><br>
+                <label for="boat-builder">Builder:</label><br>
                 <select id="boat-builder" class="form-control input" name="boat-builder">
                     <option value="all">All boats</option>
                     <?php
                     $builders = getBoatBuilders();
                     foreach ($builders as $builder): ?>
                         <option value="<?php echo $builder['name']; ?>"
-                                name="<?php echo $builder['name']; ?>"><?php echo $builder['name']; ?></option>
+                                name="<?php echo $builder['name']; ?>"
+                            <?php if(isset($_SESSION['boat-builder'])&&($builder['name']==$_SESSION['boat-builder'])) {echo 'selected';} ?>
+                        ><?php echo $builder['name']; ?></option>
                     <?php endforeach; ?>
                 </select>
                 <br>
 
                 <!--boat country-->
-                <label for="boat-country">Select country</label><br>
+                <label for="boat-country">Currently lying:</label><br>
                 <select id="boat-country" class="form-control input" name="boat-country">
                     <option value="all">All boats</option>
                     <?php
                     $countries = getBoatCountry();
                     foreach ($countries as $country): ?>
                         <option calss="col-md-10" value="<?php echo $country['country']; ?>"
-                                name="<?php echo $country['country']; ?>"><?php echo $country['country']; ?></option>
+                                name="<?php echo $country['country']; ?>"
+                            <?php if(isset($_SESSION['boat-country'])&&($country['country']==$_SESSION['boat-country'])) {echo 'selected';} ?>
+                        ><?php echo $country['country']; ?></option>
                     <?php endforeach; ?>
                 </select>
                 <br>
 
-                <!--boat builders-->
-                <label for="boat-year">Select boats built after</label><br>
+                <!--boat year-->
+                <label for="boat-year">Built after:</label><br>
                 <select id="boat-year" class="form-control input" name="boat-year">
                     <option value="all">All boats</option>
                     <?php
                     $years = getBoatYears();
                     foreach ($years as $year): ?>
                         <option value="<?php echo $year['year']; ?>"
-                                name="<?php echo $year['year']; ?>"><?php echo $year['year']; ?></option>
+                                name="<?php echo $year['year']; ?>"
+                            <?php if(isset($_SESSION['boat-year'])&&($year['year']==$_SESSION['boat-year'])) {echo 'selected';} ?>
+                        ><?php echo $year['year']; ?></option>
                     <?php endforeach; ?>
                 </select>
                 <br>
@@ -125,6 +147,7 @@ require "functions.php";
         <?php
         if (isset($_POST['search'])) {
 //            searchBoats();
+
             findBoats();
         } else {
             getRandomBoats();
