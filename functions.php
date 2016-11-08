@@ -137,7 +137,7 @@ function findBoats()
     // Filter by KEYWORD
     if ($_POST['boat-keyword'] != '') {
 //        echo "|" .$_POST['boat-keyword']. "|";
-        $queryStr = $queryStr . " AND boat_standard_items.`description` LIKE '%" . $_POST['boat-keyword'] . "%'";
+        $queryStr = $queryStr . " AND boats.`title` LIKE '%" . $_POST['boat-keyword'] . "%' OR boats.title LIKE '%" . $_POST['boat-keyword'] . "%'";
     }
 
     $queryStr = $queryStr . " GROUP BY boats.id LIMIT 100";
@@ -226,6 +226,45 @@ function getBoatCountry($id = null)
     $id == null ?
         $queryStr = "SELECT DISTINCT country FROM boat_locations" :
         $queryStr = "SELECT country,name,address FROM boat_locations WHERE boat_id=" . $id;
+    $query = $conn->prepare($queryStr);
+    $query->execute();
+    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+    $conn = null;
+
+    return $result;
+}
+
+// Get boat category
+function getBoatCategories()
+{
+    $conn = connection();
+    $queryStr = "SELECT id,name FROM categories";
+    $query = $conn->prepare($queryStr);
+    $query->execute();
+    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+    $conn = null;
+
+    return $result;
+}
+
+// Get Boat type informations
+function getStandardItems()
+{
+    $conn = connection();
+
+    $query = $conn->prepare("SELECT id,name,category_id FROM standard_items");
+    $query->execute();
+    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+    $conn = null;
+
+    return $result;
+}
+
+// Get boat standard item
+function getBoatStandardItem($categoryId)
+{
+    $conn = connection();
+    $queryStr = "SELECT id,name FROM standard_items WHERE category_id=".$categoryId;
     $query = $conn->prepare($queryStr);
     $query->execute();
     $result = $query->fetchAll(PDO::FETCH_ASSOC);

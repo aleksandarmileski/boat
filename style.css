@@ -39,11 +39,15 @@ div.clear {
 }
 
 .textinput {
-    width: 65%;
+    width: 40%;
 }
 
 .invisible {
     display: none;
+}
+
+.inlineProp {
+    display: inline;
 }
 
 .boatContent {

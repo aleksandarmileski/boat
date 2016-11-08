@@ -2,16 +2,16 @@
 session_start();
 require "functions.php";
 
-if (isset($_POST['search'])){
-    $_SESSION['boat-type']=$_POST['boat-type'];
-    $_SESSION['size-from']=$_POST['size-from'];
-    $_SESSION['size-to']=$_POST['size-to'];
-    $_SESSION['price-from']=$_POST['price-from'];
-    $_SESSION['price-to']=$_POST['price-to'];
-    $_SESSION['boat-keyword']=$_POST['boat-keyword'];
-    $_SESSION['boat-builder']=$_POST['boat-builder'];
-    $_SESSION['boat-country']=$_POST['boat-country'];
-    $_SESSION['boat-year']=$_POST['boat-year'];
+if (isset($_POST['search'])) {
+    $_SESSION['boat-type'] = $_POST['boat-type'];
+    $_SESSION['size-from'] = $_POST['size-from'];
+    $_SESSION['size-to'] = $_POST['size-to'];
+    $_SESSION['price-from'] = $_POST['price-from'];
+    $_SESSION['price-to'] = $_POST['price-to'];
+    $_SESSION['boat-keyword'] = $_POST['boat-keyword'];
+    $_SESSION['boat-builder'] = $_POST['boat-builder'];
+    $_SESSION['boat-country'] = $_POST['boat-country'];
+    $_SESSION['boat-year'] = $_POST['boat-year'];
 }
 
 ?>
@@ -51,7 +51,9 @@ if (isset($_POST['search'])){
                     <option value="<?php echo $type['id']; ?>"
                             name="<?php echo $type['type']; ?>"
                             id="<?php echo $type['id']; ?>"
-                            <?php if(isset($_SESSION['boat-type'])&&($type['id']==$_SESSION['boat-type'])) {echo 'selected';} ?> >
+                        <?php if (isset($_SESSION['boat-type']) && ($type['id'] == $_SESSION['boat-type'])) {
+                            echo 'selected';
+                        } ?> >
                         <?php echo $type['type']; ?>
                     </option>
                 <?php endforeach; ?>
@@ -59,29 +61,61 @@ if (isset($_POST['search'])){
             <br>
 
             <!--boat size-->
-            <label for="size-from">Boat size:</label><br>
-            <input type="number" min="0" step="50" name="size-from" id="size-from"
-                   value=<?php if(isset($_SESSION['size-from'])) {echo $_SESSION['size-from'];} else{echo 50;} ?>
-                   class="form-control textinput input">
+            <div class="standardItems">
+                <label for="size-from">Boat standard items:</label>
+                <hr>
+                <br>
+                <div class="mainStandardItem" id="mainStandardItem">
+
+                    <div class="category">
+                        <label for="size-from">Boat category:</label><br>
+                        <select name="category" class="form-control input" id="category"></select>
+                        <select name="standard-item" class="form-control input" id="standard-item"></select>
+                    </div>
+
+                    <div class="standardItemsValues">
+                        <input type="number" min="0" step="50" name="size-from" id="size-from"
+                               value=<?php if (isset($_SESSION['size-from'])) {
+                                   echo $_SESSION['size-from'];
+                               } else {
+                                   echo 50;
+                               } ?>
+                               class="form-control textinput input inlineProp">
 
 
-            <label for="size-to">to</label>
-            <input type="number" step="50" id="size-to" min="0" name="size-to"
-                   value=<?php if(isset($_SESSION['size-to'])) {echo $_SESSION['size-to'];} else{echo 1500;} ?>
-                   class="form-control textinput input">
-            <label>ft</label>
+                        <label for="size-to">to</label>
+                        <input type="number" step="50" id="size-to" min="0" name="size-to"
+                               value=<?php if (isset($_SESSION['size-to'])) {
+                                   echo $_SESSION['size-to'];
+                               } else {
+                                   echo 1500;
+                               } ?>
+                               class="form-control textinput input inlineProp">
+                        <label>ft</label>
+                        <button class="addStandardItem">+</button>
+                    </div>
+                </div>
+            </div>
             <br><br>
 
             <!--boat price-->
             <label>Price</label><br>
-            <label for="price-from">&euro;</label><br>
             <input type="number" step="100" id="price-from" name="price-from" min="0"
-                   value=<?php if(isset($_SESSION['price-from'])) {echo $_SESSION['price-from'];} else{echo 0;} ?>
-                   class="form-control textinput input">
-            <label for="price-to">to</label><br>
+                   value=<?php if (isset($_SESSION['price-from'])) {
+                       echo $_SESSION['price-from'];
+                   } else {
+                       echo 0;
+                   } ?>
+                   class="form-control textinput input inlineProp">
+            <label for="price-to">to</label>
             <input type="number" step="100" id="price-to" name="price-to" min="0"
-                   value=<?php if(isset($_SESSION['price-to'])) {echo $_SESSION['price-to'];} else{echo 15000;} ?>
-                   class="form-control textinput input">
+                   value=<?php if (isset($_SESSION['price-to'])) {
+                       echo $_SESSION['price-to'];
+                   } else {
+                       echo 15000;
+                   } ?>
+                   class="form-control textinput input inlineProp">
+            <label for="price-from">&euro;</label><br>
             <br>
 
             <div id="additional" class="invisible">
@@ -89,7 +123,9 @@ if (isset($_POST['search'])){
                 <!--keyword-->
                 <label for="boat-keyword">Keywords: </label><br>
                 <input type="text" id="boat-keyword" class="form-control input" name="boat-keyword"
-                       value=<?php if(isset($_SESSION['boat-keyword'])) {echo $_SESSION['boat-keyword'];} ?>
+                       value=<?php if (isset($_SESSION['boat-keyword'])) {
+                           echo $_SESSION['boat-keyword'];
+                       } ?>
                 ><br>
 
                 <!--boat builders-->
@@ -101,7 +137,9 @@ if (isset($_POST['search'])){
                     foreach ($builders as $builder): ?>
                         <option value="<?php echo $builder['name']; ?>"
                                 name="<?php echo $builder['name']; ?>"
-                            <?php if(isset($_SESSION['boat-builder'])&&($builder['name']==$_SESSION['boat-builder'])) {echo 'selected';} ?>
+                            <?php if (isset($_SESSION['boat-builder']) && ($builder['name'] == $_SESSION['boat-builder'])) {
+                                echo 'selected';
+                            } ?>
                         ><?php echo $builder['name']; ?></option>
                     <?php endforeach; ?>
                 </select>
@@ -116,7 +154,9 @@ if (isset($_POST['search'])){
                     foreach ($countries as $country): ?>
                         <option calss="col-md-10" value="<?php echo $country['country']; ?>"
                                 name="<?php echo $country['country']; ?>"
-                            <?php if(isset($_SESSION['boat-country'])&&($country['country']==$_SESSION['boat-country'])) {echo 'selected';} ?>
+                            <?php if (isset($_SESSION['boat-country']) && ($country['country'] == $_SESSION['boat-country'])) {
+                                echo 'selected';
+                            } ?>
                         ><?php echo $country['country']; ?></option>
                     <?php endforeach; ?>
                 </select>
@@ -131,7 +171,9 @@ if (isset($_POST['search'])){
                     foreach ($years as $year): ?>
                         <option value="<?php echo $year['year']; ?>"
                                 name="<?php echo $year['year']; ?>"
-                            <?php if(isset($_SESSION['boat-year'])&&($year['year']==$_SESSION['boat-year'])) {echo 'selected';} ?>
+                            <?php if (isset($_SESSION['boat-year']) && ($year['year'] == $_SESSION['boat-year'])) {
+                                echo 'selected';
+                            } ?>
                         ><?php echo $year['year']; ?></option>
                     <?php endforeach; ?>
                 </select>
@@ -159,10 +201,15 @@ if (isset($_POST['search'])){
     </div>
 </div>
 
-
+<script>
+    var categories = <?=json_encode(getBoatCategories()); ?>;
+    var standardItems = <?=json_encode(getStandardItems()); ?>;
+</script>
 <script src="https://code.jquery.com/jquery-3.1.1.js"
         integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
         crossorigin="anonymous"></script>
+
+
 <script src="script.js"></script>
 </body>
 </html>
