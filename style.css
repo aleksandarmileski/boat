@@ -23,20 +23,22 @@ div.clear {
 }
 
 .res {
-    border: 3px solid #004237;
+    border: 1px solid transparent;
     border-radius: 5px;
     float: left;
     margin-top: 10px;
     width: 100%;
+    padding-top:10px;
 }
 
 .res:hover {
-    background-color: #94cdba;
+    background-color: aliceblue;
 }
 
-.res p {
+.res span {
     float: left;
 }
+
 
 .textinput {
     width: 40%;
@@ -73,13 +75,18 @@ p {
 
 h3 {
     float: left;
-    margin-top: 15px;
     color: #004237;
-    background-color: #94cdba;
+    font-weight: bold;
+    margin: 0; !important;
+
 }
 
 h4 {
     float: left;
+    font-weight: lighter; !important;
+
+
+
 }
 
 .topNav {
@@ -107,7 +114,13 @@ a {
 a:hover {
     color: #004237;
     text-decoration: none;
+    cursor: pointer !important;
     font-weight: bold;
+}
+
+a p:hover {
+    font-weight: bold;
+
 }
 
 .btn-search {
@@ -155,14 +168,20 @@ a:hover {
 }
 
 .footer {
-	height: 50px;
-    background-color: #004230;	
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    background-color: #efefef;
+    text-align: center;
 }
 
 .mySlides {
     height: 400px;
     display: inherit;
     width: 100%;
+    transition: width 2s, height 2s, background-color 2s, transform 2s;
 }
 
 tbody tr:hover {
@@ -171,7 +190,8 @@ tbody tr:hover {
 }
 
 .sArea button {
-    background-color: #94cdba;
+    background-color: #004237;
+    color:white;
 }
 
 /* Always set the map height explicitly to define the size of the div
@@ -179,4 +199,38 @@ tbody tr:hover {
 #map {
     height: 500px;
     width: 100%;
+}
+.grow { transition: all .2s ease-in-out; }
+.grow:hover { transform: scale(1.1); }
+
+.img-fix {
+    border: 1px transparent;
+    border-radius: 5px;
+    margin-bottom: 7px;
+}
+
+label.p {
+    font-weight: 200;
+}
+hr{
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    margin-top: 25px;
+    padding-top: 2px;
+}
+body {
+    font-family: 'Roboto', sans-serif !important;
+    font-family: 'Shrikhand', cursive;
+    background-color: lightgray;
+}
+.slideImagesFix {
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+span {
+    font-weight: lighter; !important;
+    text-underline: dash;
 }

@@ -64,31 +64,32 @@ if (isset($_GET['id'])) {
 </head>
 <body>
 
-<div class='loginNav col-md-12'></div>
 <a href='index.php'>
-    <div class='topNav col-md-12'>
-        <img src='Goliath.png'/>
+    <div class='topNav'>
+        <img class="img-responsive" style="margin-left: 150px;" src='Goliath.png'/>
     </div>
 </a>
 
-<div class='container col-md-12'>
+<div class='container'>
 
     <!--    Top main div-->
-    <div class="col-md-12">
+    <div class="col-sm-12">
+        <div class="col-md-10 col-md-offset-1">
+
         <!--    Main info div-->
         <div class='boatContent'>
-            <h3 id='title' class='col-md-10'>
-                <?= $boatMainDetails['title']; ?>
+            <h3 id='title' class='col-sm-10'>
+                <span><?= $boatMainDetails['title']; ?></span>
             </h3>
             <hr>
-            <h3 id='title' class='col-md-10'>
-                Price <?= $boatPrice['value'] . " " . $boatPrice['currency'] ?>
+            <h3 id='title' class='col-sm-10'>
+                <span> Price:  <?= $boatPrice['value'] . " " . $boatPrice['currency'] ?></span>
             </h3>
             <hr>
-            <h4 class='col-md-10'>
-                Built <?= $boatMainDetails['year']; ?>
+            <h4 class='col-sm-10'>
+                Built in: <?= $boatMainDetails['year']; ?>
             </h4>
-            <h4 class='col-md-10'>
+            <h4 class='col-sm-10'>
                 Builder: <?= $boatBuilder; ?>
             </h4>
             <h4 class='col-md-10'> Country: <?= $boatCountry[0]['country']; ?></h4>
@@ -96,88 +97,101 @@ if (isset($_GET['id'])) {
         </div>
 
         <!--    Picture div   -->
-        <div class='w3-content w3-display-container slideImages col-md-6'>
+        <div class='w3-content w3-display-container slideImages slideImagesFix col-md-5'>
             <?php foreach ($boatPhotos as $url): ?>
-                <img class='mySlides' src="<?= 'http://46.101.221.106/images/' . $url; ?>">
+                <img class='img-responsive mySlides' style="width: 100%;" src="<?= 'http://46.101.221.106/images/' . $url; ?>">
             <?php endforeach; ?>
             <a class='w3-btn-floating w3-display-left' onclick='plusDivs(-1)'>&#10094;</a>
             <a class='w3-btn-floating w3-display-right' onclick='plusDivs(1)'>&#10095;</a>
+
         </div>
+            </div>
     </div>
 
     <!--    Standard Items div-->
-    <div class="col-md-12">
-        <hr>
-        <h3 class="text-center col-md-12">Boat Standard Items</h3>
+    <div class="col-md-10 col-md-offset-1 text-center">
+           <hr>
+        <h3 class="text-center col-md-10 col-md-offset-1" style="margin-bottom: 20px;">Boat Standard Items</h3>
         <?php if (count($boatStandarsItems) == 0) : ?>
-            <p class="text-center col-md-12"> --- There is no data about Standard Items --- </p>
+            <p class="text-center"> --- There is no data about Standard Items --- </p>
         <?php endif; ?>
         <?php foreach ($boatStandarsItems as $boatStandarsItemsCatgeoryID => $boatStandarsItemsDetails): ?>
             <div class="col-md-4">
-                <h3 class="text-center col-md-12"><?php if ($boatStandarsItemsCatgeoryID != 'null') {
+               <h4 style="float: none !important; margin: 5px; font-weight: bold;"><?php if ($boatStandarsItemsCatgeoryID != 'null') {
                         echo($boatStandarsItemsCategory[$boatStandarsItemsCatgeoryID]);
                     } else {
                         echo 'No specified category';
-                    }; ?></h3>
+                    }; ?>: </h4>
+                <div class="col-md-8 col-md-offset-2">
                 <?php foreach ($boatStandarsItemsDetails as $boatStandarsItems): ?>
-                    <p class="col-md-12"><?= $boatStandarsItems['name']; ?>: <?= $boatStandarsItems['value']; ?></p>
+                    <h5 style="margin: 0 !important; font-weight: bold;"><?= $boatStandarsItems['name']; ?></h5> <?= $boatStandarsItems['value']; ?>
                 <?php endforeach; ?>
+                    <hr />
+                    </div>
             </div>
         <?php endforeach; ?>
+            </div>
     </div>
+
+
 
     <!--    Contact div-->
-    <div class="col-md-12">
-        <div class='dimension col-md-12'>
-            <hr>
-            <h3 class='col-md-12'>Find out more</h3>
-            <p class='col-md-10'>Interested in this boat? Find out more or arrange a viewing by completing this
-                form.</p>
-            <p class='col-md-10'>We'll get back to you with more information and take you thorough the options for
-                viewing and buying this boat.</p>
-            <p class='col-md-10'>Alternatively, don't forget that you can call us on +44 800 037 1329 anytime for a
-                chat</p>
-            <hr>
-        </div>
-        <div class='col-md-12'>
-            <form id='getContactInfo' action='' method="post">
-                <div class='form-group col-md-12'>
-                    <label for='name'>Your name:</label>
-                    <input class='form-control' id='name' name="name" type='text' required>
-                </div>
-                <div class='form-group col-md-12'>
-                    <label for='email'>Your email address:</label>
-                    <input class='form-control' id='email' name="email" type='text' required>
-                </div>
-                <div class='form-group col-md-12'>
-                    <label for='phone'>Phone number:</label>
-                    <input class='form-control' id='phone' name="phone" type='text' required>
-                </div>
-                <label for='options' class='col-md-10'>Preferred contact method:</label>
-                <div class='col-md-10'>
-                    <label class='col-md-10'>
-                        <input type='radio' name='options' value="phone">phone
-                    </label>
-                    <label class='col-md-10'>
-                        <input type='radio' name='options' value="e-mail" checked>e-mail
-                    </label>
-                </div>
-                <div class='form-group col-md-12'>
-                    <label for='notes'>Notes:</label>
-                    <textarea class='form-control' id='notes' name="notes" rows='5'></textarea>
-                </div>
+    <div class="col-md-10 col-md-offset-1 text-center" style="float:none !important;">
 
-                <div class='sArea col-md-12'>
-                    <button type='submit' id='submitInfo' name="submitInfo" class="btn col-md-4">Send enquiry</button>
-                </div>
-            </form>
+        <div class="col-md-6 col-md-offset-3"  style="float:none !important;">
+            <hr />
+    <h3 class='text-center' style="margin: 20px; float:none !important;">Find out more</h3>
+        <p style="float:none; !important;">Interested in this boat? Find out more or arrange a viewing by completing this
+            form.</p>
+        <p style="float:none; !important;">We'll get back to you with more information and take you thorough the options for
+            viewing and buying this boat.</p>
+        <p style="float:none; !important;">Alternatively, don't forget that you can call us on +44 800 037 1329 anytime for a
+            chat</p>
+            </div>
+
+        <div class="col-md-8 col-md-offset-2" style="float:none !important">
+
+        <form id='getContactInfo' action='' method="post">
+            <div class='form-group col-md-6 col-md-offset-3'>
+                <label for='name'>Your name:</label>
+                <input class='form-control' id='name' name="name" type='text' required>
+            </div>
+            <div class='form-group col-md-6 col-md-offset-3'>
+                <label for='email'>Your email address:</label>
+                <input class='form-control' id='email' name="email" type='text' required>
+            </div>
+            <div class='form-group col-md-6 col-md-offset-3'>
+                <label for='phone'>Phone number:</label>
+                <input class='form-control' id='phone' name="phone" type='text' required>
+            </div>
+            <label class="col-md-6 col-md-offset-3" for='options'>Preferred contact method:</label>
+            <div class="col-md-6 col-md-offset-3">
+                <label>
+                    <input type='radio' name='options' value="phone">phone
+                </label>
+                <label>
+                    <input type='radio' name='options' value="e-mail" checked>e-mail
+                </label>
+            </div>
+            <div class="col-md-6 col-md-offset-3">
+                <label for='notes'>Notes:</label>
+                <textarea class='form-control' id='notes' name="notes" rows='5'></textarea>
+            </div>
+
+            <div class='sArea text-center col-md-8 col-md-offset-2' style="margin-top: 20px;">
+                <button type='submit' id='submitInfo' name="submitInfo" class="btn">Send enquiry</button>
+            </div>
+        </form>
         </div>
+
     </div>
 
+
+
     <!--    Map div   -->
-    <div class="col-md-12">
+    <div class="col-md-8 col-md-offset-2">
         <hr>
-        <h3 class="text-center col-md-12">Boat Map</h3>
+        <h3 class="text-center col-md-8 col-md-offset-2" style="margin-bottom: 20px;"Boat Map</h3>
         <div id="map"></div>
         <script>
             var latitude = "<?=$boatLatitude; ?>";
@@ -187,16 +201,11 @@ if (isset($_GET['id'])) {
         </script>
     </div>
 </div>
-</div>
-
 
 <script>
 
 </script>
 
-
-<div class="foot col-md-12"></div>
-<div class="footer col-md-12"></div>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBusPgYdcaTfv_8qyYEgqOmKzy-SgVZX2M&callback=initMap"
         async defer></script>
 <script src="https://code.jquery.com/jquery-3.1.1.js"

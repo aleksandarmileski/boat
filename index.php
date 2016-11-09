@@ -20,6 +20,7 @@ if (isset($_POST['search'])) {
 <head>
     <meta charset="UTF-8">
     <title>Boat Search</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
           crossorigin="anonymous">
@@ -27,17 +28,17 @@ if (isset($_POST['search'])) {
 </head>
 <body>
 
-<div class='loginNav col-xs-12'></div>
 <a href='index.php'>
     <div class='topNav'>
-        <img src='Goliath.png'/>
+        <img class="img-responsive" style="margin-left: 150px;" src='Goliath.png'/>
     </div>
 </a>
 
-<div class="box col-xs-12">
+<div class="container">
 
-    <div class="div1 col-xs-6">
-        <form method="post" class="form-horizontal col-md-10">
+    <div class="pull-left col-md-6">
+        <div class="pull-left col-md-6">
+        <form method="post" class="form-horizontal">
 
             <!--boat types-->
             <label for="boat-type">Boat type:</label><br>
@@ -180,12 +181,14 @@ if (isset($_POST['search'])) {
                 <br>
 
             </div>
-            <a id="sh">Show aditional search properties</a>
+            <a id="sh" style="margin-bottom: 10px;">Show additional search properties...</a>
 
             <input type="submit" class="btn btn-search col-md-12" value="Search" id="search" name="search">
         </form>
     </div>
-    <div class="div2 col-xs-6">
+    </div>
+   
+        <div class="col-md-6 pull-right">
         <?php
         if (isset($_POST['search'])) {
 //            searchBoats();

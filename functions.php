@@ -52,12 +52,13 @@ function getRandomBoats()
         $year = $row['year'];
 
         echo "<a href='http://" . $_SERVER['HTTP_HOST'] . "/boat/boat.php?id=" . $id . "'>";
-        echo "<div class='res' id='$id'>";
-        echo "<img src='http://46.101.221.106/images/" . $photo . "' class='image-rounded col-md-4' >";
+        echo "<div class='res grow' id='$id'>";
+        echo "<img src='http://46.101.221.106/images/" . $photo . "' class='img-responsive img-fix grow col-md-4' >";
         echo "<h3 id='title' class='col-md-8'>$title</h3>";
-        echo "<p class='col-md-6'>Type: {$type}, Price {$price} &euro;, Builder: {$builder}, Currently lying: {$country}</p>";
+        echo "<span class='col-md-6'>Type: {$type}, <br /> Price {$price} &euro;, <br /> Builder: {$builder}, <br /> Currently lying: {$country}</span>";
         echo "</div>";
         echo "</a>";
+        echo "<hr />";
     }
     $conn = null;
 }
