@@ -7,26 +7,11 @@ $(document).ready(function () {
         }
         $("#additional").toggleClass("invisible");
     });
-
-    // $.ajax({
-    //     url: "http://46.101.221.106/api/categories?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlbmtvbWFuY2Vza2kxMjNAZ21haWwuY29tIiwiaWQiOjE4NywiaWF0IjoxNDc4MDEyNDMxfQ.snQ9PvwVTrsJlNIfi69ZP5flsZe3lntaPCsszAakU9U",
-    //     type: "GET",
-    //     success: function (msg) {
-    //         msg.forEach(function (category) {
-    //             // $('#category').append("<option id="+category['id']+">"+category['name']+"</option>");
-    //             console.log(category['id']);
-    //             // console.log(standardItems);
-    //         })
-    //     }
-    // });
-
-
 });
 
 // --- MAPS ---
 var map;
-var latitude = Number(latitude);
-var longitude = Number(longitude);
+var latitude = Number(latitude), longitude = Number(longitude);
 
 function initMap() {
     var location = {lat: latitude, lng: longitude};
@@ -68,37 +53,98 @@ $("#getContactInfo").on('submit', function (e) {
         },
         error: function (xhr, desc, err) {
             console.log("error");
-
         }
     });
     e.preventDefault();
 });
 
-$("#standard-item").hide();
-$(".standardItemsValues").hide();
-
-var selectedCategory = "";
-categories.forEach(function(category){
+// Auto fill dropdowns
+$('#category').append("<option id='all'>All categories</option>");
+categories.forEach(function (category) {
     // console.log(category['name']);
-    $('#category').append("<option id="+category['id']+">"+category['name']+"</option>");
+    $('#category').append("<option id=" + category['id'] + ">" + category['name'] + "</option>");
+});
+standardItems.forEach(function (standardItem) {
+    $('#standard-item').append("<option id=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
 });
 
-$("#category").on('click', function (e) {
-    selectedCategory=$('#category option:selected').attr('id');
-    $('#standard-item').empty();
-    standardItems.forEach(function(standardItem){
-        if (standardItem['category_id']==selectedCategory){
-            $('#standard-item').append("<option id="+standardItem['id']+">"+standardItem['name']+"</option>");
+// Print Div id
+$(document).on('click', 'div[id^="mainStandardItem"]', function (e) {
+    // console.log($(this).attr('id'));
+});
+
+// Select category an fill with Standard items options
+$(document).on('click', 'select[id^="category"]', function (e) {
+    $categoryID = $(this).attr('id');
+    $selectedCategoryID = $(this).children(":selected").attr("id");
+
+    // console.log('Select ID: ' + $categoryID);
+    // console.log('Selected category id: ' + $selectedCategoryID);
+
+    if ($categoryID == 'category') {
+        // console.log("u ve hited the main category");
+        $('#standard-item').empty();
+        if ($selectedCategoryID == 'all') {
+            standardItems.forEach(function (standardItem) {
+                $('#standard-item').append("<option id=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+            });
+        } else {
+            standardItems.forEach(function (standardItem) {
+                if (standardItem['category_id'] == $selectedCategoryID) {
+                    $('#standard-item').append("<option id=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+                }
+            });
+        }
+    } else {
+        $categoryIdIndex = parseInt($categoryID.match(/\d+/g), 10);
+        // console.log($categoryIdIndex);
+        $('#standard-item' + $categoryIdIndex).empty();
+        if ($selectedCategoryID == 'all') {
+            standardItems.forEach(function (standardItem) {
+                $('#standard-item' + $categoryIdIndex).append("<option id=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+            });
+        } else {
+            standardItems.forEach(function (standardItem) {
+                if (standardItem['category_id'] == $selectedCategoryID) {
+                    $('#standard-item' + $categoryIdIndex).append("<option id=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+                }
+            });
+        }
+    }
+});
+
+// Add more categories
+$cloneCounter = 1;
+$(".addCategory").on('click', function (e) {
+
+    e.preventDefault();
+
+    var clone = $('div[id^="mainStandardItem"]:last')
+        .clone(false);
+
+    // change all id values to a new unique value by adding number X to the end
+    // where X is a number that increases last div number at the end
+    $("*", clone).add(clone).each(function () {
+        if (~this.id.indexOf("mainStandardItem")) {
+            this.id = "mainStandardItem" + $cloneCounter;
+        }
+        if (~this.id.indexOf("category")) {
+            this.id = "category" + $cloneCounter;
+        }
+        if (~this.id.indexOf("standard-item")) {
+            this.id = "standard-item" + $cloneCounter;
         }
     });
-    $("#standard-item").show();
+    if (clone.find('button').length==0) {
+        $("<button class='removeCategory btn btn-danger'>Remove category</button>").appendTo(clone);
+    }
+    $cloneCounter++;
+    // console.log(clone);
+    $(clone).insertAfter('div[id^="mainStandardItem"]:last');
 });
 
-$("#standard-item").on('click', function (e) {
-    $(".standardItemsValues").show();
-});
-
-$(".addStandardItem").on('click', function (e) {
+$(document).on('click', '.removeCategory', function (e) {
     e.preventDefault();
-    $(".mainStandardItem").clone().appendTo(".standardItems");
+    $divId = $(this).closest("div").prop("id");
+    $("#" + $divId).remove();
 });
