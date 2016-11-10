@@ -4,14 +4,20 @@ require "functions.php";
 
 if (isset($_POST['search'])) {
     $_SESSION['boat-type'] = $_POST['boat-type'];
-    $_SESSION['size-from'] = $_POST['size-from'];
-    $_SESSION['size-to'] = $_POST['size-to'];
     $_SESSION['price-from'] = $_POST['price-from'];
     $_SESSION['price-to'] = $_POST['price-to'];
     $_SESSION['boat-keyword'] = $_POST['boat-keyword'];
     $_SESSION['boat-builder'] = $_POST['boat-builder'];
     $_SESSION['boat-country'] = $_POST['boat-country'];
     $_SESSION['boat-year'] = $_POST['boat-year'];
+
+    //    $_SESSION['standard-item-value-from'] = $_POST['standard-item-value-from'];
+    //    $_SESSION['standard-item-value-to'] = $_POST['standard-item-value-to'];
+
+//    echo "<pre>";
+//    print_r(count($_POST['standard-item']));
+//    echo "</pre>";
+
 }
 
 ?>
@@ -61,14 +67,14 @@ if (isset($_POST['search'])) {
                 </select>
                 <br>
 
-                <!--boat size-->
+                <!--boat standard-item-value-->
                 <div class="standardItems">
-                    <label for="size-from">Boat standard items:</label>
+                    <label for="standard-item-value-from">Boat standard items:</label>
                     <hr>
                     <br>
                     <div class="mainStandardItem" id="mainStandardItem">
 
-                        <label for="size-from">Boat category:</label><br>
+                        <label for="standard-item-value-from">Boat category:</label><br>
                         <select
                             name="category[]"
                             id="category"
@@ -80,19 +86,20 @@ if (isset($_POST['search'])) {
                             class="form-control input">
                         </select>
                         <label>from</label>
-                        <input type="number" min="0" step="50" name="size-from[]" id="size-from"
-                               value=<?php if (isset($_SESSION['size-from'])) {
-                                   echo $_SESSION['size-from'];
+                        <input type="number" min="0" step="50"
+                               name="standard-item-value-from[]"
+                               id="standard-item-value-from"
+                               value=<?php if (isset($_SESSION['standard-item-value-from'])) {
+                                   echo $_SESSION['standard-item-value-from'];
                                } else {
                                    echo 50;
                                } ?>
                                class="form-control textinput input inlineProp">
-
-
-                        <label for="size-to">to</label>
-                        <input type="number" step="50" id="size-to" min="0" name="size-to[]"
-                               value=<?php if (isset($_SESSION['size-to'])) {
-                                   echo $_SESSION['size-to'];
+                        <label for="standard-item-value-to">to</label>
+                        <input type="number" step="50" min="0"
+                               id="standard-item-value-to" name="standard-item-value-to[]"
+                               value=<?php if (isset($_SESSION['standard-item-value-to'])) {
+                                   echo $_SESSION['standard-item-value-to'];
                                } else {
                                    echo 1500;
                                } ?>
@@ -194,8 +201,6 @@ if (isset($_POST['search'])) {
     <div class="col-md-6 pull-right">
         <?php
         if (isset($_POST['search'])) {
-//            searchBoats();
-
             findBoats();
         } else {
             getRandomBoats();

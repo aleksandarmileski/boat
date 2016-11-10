@@ -86,7 +86,7 @@ function findBoats()
         INNER JOIN boat_locations ON boats.id=boat_locations.boat_id 
         LEFT JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id
      WHERE prices.current=1 
-        AND boat_standard_items.`standard_item_id`=68";
+        ";
 
 
     // Filter by TYPE
@@ -95,14 +95,32 @@ function findBoats()
         $queryStr = $queryStr . " AND types.id=" . $_POST['boat-type'] . " ";
     }
 
-    // Filter by BOAT SIZE
-    if ($_POST['size-from'] != '' || $_POST['size-to'] != '') {
-        if ($_POST['size-from'] != '') {
-            $queryStr = $queryStr . " AND boat_standard_items.`value` >=" . $_POST['size-from'] . " ";
+    // Filter by BOAT standard item
+    if (count($_POST['standard-item']) > 0) {
+
+        $queryStr = $queryStr . " AND boat_standard_items.`boat_id` IN (";
+        $brStandardItems = count($_POST['standard-item']);
+        for ($i = 0; $i < $brStandardItems; $i++) {
+            echo "------";
+            echo "Category id: " . $_POST['category'][$i] . "     ";
+            $standardItemID = $_POST['standard-item'][$i] . "     ";
+            echo "Standard item id: " . $_POST['standard-item'][$i] . "     ";
+            $standardItemFromValue = $_POST['standard-item-value-from'][$i];
+            echo "Standard item values from: " . $_POST['standard-item-value-from'][$i] . "     ";
+            $standardItemToValue = $_POST['standard-item-value-to'][$i];
+            echo "Standard item values to: " . $_POST['standard-item-value-to'][$i] . "     ";
+
+            $queryStr = $queryStr . " SELECT boat_standard_items.`boat_id` FROM boat_standard_items ";
+            $queryStr = $queryStr . " WHERE boat_standard_items.`value` BETWEEN " . $standardItemFromValue . " AND " . $standardItemToValue;
+            $queryStr = $queryStr . " AND boat_standard_items.`standard_item_id`=" . $standardItemID;
+
+            $i < $brStandardItems - 1
+                ? $queryStr = $queryStr . " UNION "
+                : $queryStr = $queryStr;
+
         }
-        if ($_POST['size-to'] != '') {
-            $queryStr = $queryStr . " AND boat_standard_items.`value` <=" . $_POST['size-to'] . " ";
-        }
+        $queryStr = $queryStr . " ) ";
+
 //        echo "|" . $_POST['size-from'] . " - " . $_POST['size-to']. "|";
     }
 
@@ -142,8 +160,9 @@ function findBoats()
     }
 
     $queryStr = $queryStr . " GROUP BY boats.id LIMIT 100";
-
+    echo $queryStr;
     $result = $conn->query($queryStr);
+
     $brBoats = 0;
     $photoUrl = "http://46.101.221.106/images/";
     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
@@ -265,7 +284,7 @@ function getStandardItems()
 function getBoatStandardItem($categoryId)
 {
     $conn = connection();
-    $queryStr = "SELECT id,name FROM standard_items WHERE category_id=".$categoryId;
+    $queryStr = "SELECT id,name FROM standard_items WHERE category_id=" . $categoryId;
     $query = $conn->prepare($queryStr);
     $query->execute();
     $result = $query->fetchAll(PDO::FETCH_ASSOC);

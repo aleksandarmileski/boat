@@ -59,13 +59,13 @@ $("#getContactInfo").on('submit', function (e) {
 });
 
 // Auto fill dropdowns
-$('#category').append("<option id='all'>All categories</option>");
+$('#category').append("<option id='all' value='all'>All categories</option>");
 categories.forEach(function (category) {
     // console.log(category['name']);
-    $('#category').append("<option id=" + category['id'] + ">" + category['name'] + "</option>");
+    $('#category').append("<option id=" + category['id'] + " value=" + category['id'] + " >" + category['name'] + "</option>");
 });
 standardItems.forEach(function (standardItem) {
-    $('#standard-item').append("<option id=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+    $('#standard-item').append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + " >" + standardItem['name'] + "</option>");
 });
 
 // Print Div id
@@ -86,12 +86,12 @@ $(document).on('click', 'select[id^="category"]', function (e) {
         $('#standard-item').empty();
         if ($selectedCategoryID == 'all') {
             standardItems.forEach(function (standardItem) {
-                $('#standard-item').append("<option id=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+                $('#standard-item').append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
             });
         } else {
             standardItems.forEach(function (standardItem) {
                 if (standardItem['category_id'] == $selectedCategoryID) {
-                    $('#standard-item').append("<option id=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+                    $('#standard-item').append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
                 }
             });
         }
@@ -101,12 +101,12 @@ $(document).on('click', 'select[id^="category"]', function (e) {
         $('#standard-item' + $categoryIdIndex).empty();
         if ($selectedCategoryID == 'all') {
             standardItems.forEach(function (standardItem) {
-                $('#standard-item' + $categoryIdIndex).append("<option id=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+                $('#standard-item' + $categoryIdIndex).append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
             });
         } else {
             standardItems.forEach(function (standardItem) {
                 if (standardItem['category_id'] == $selectedCategoryID) {
-                    $('#standard-item' + $categoryIdIndex).append("<option id=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+                    $('#standard-item' + $categoryIdIndex).append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
                 }
             });
         }
@@ -135,7 +135,7 @@ $(".addCategory").on('click', function (e) {
             this.id = "standard-item" + $cloneCounter;
         }
     });
-    if (clone.find('button').length==0) {
+    if (clone.find('button').length == 0) {
         $("<button class='removeCategory btn btn-danger'>Remove category</button>").appendTo(clone);
     }
     $cloneCounter++;
