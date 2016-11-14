@@ -80,12 +80,12 @@ function findBoats()
      FROM boats        
         LEFT JOIN boat_types ON boats.id=boat_types.boat_id
         LEFT JOIN types ON boat_types.type_id=types.id           
-        LEFT JOIN photos ON boats.id=photos.boat_id       
+        INNER JOIN photos ON boats.id=photos.boat_id       
         INNER JOIN prices ON boats.id=prices.boat_id        
         INNER JOIN builders ON boats.builders_id=builders.id        
         INNER JOIN boat_locations ON boats.id=boat_locations.boat_id 
         LEFT JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id
-     WHERE prices.current=1 
+     WHERE prices.current=1 AND photos.`primaryPhoto`=1 
         ";
 
 
@@ -98,28 +98,46 @@ function findBoats()
     // Filter by BOAT standard item
     if (count($_POST['standard-item']) > 0) {
 
-        $queryStr = $queryStr . " AND boat_standard_items.`boat_id` IN (";
+//        $queryStr = $queryStr . " AND `sequalize`.`boats`.`id` IN (";
+//        $queryStr = $queryStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id`";
+//        $queryStr = $queryStr . "     FROM ( ";
         $brStandardItems = count($_POST['standard-item']);
+        $nullDimensions = getStandardItemsNullDimensions();
         for ($i = 0; $i < $brStandardItems; $i++) {
             echo "------";
-            echo "Category id: " . $_POST['category'][$i] . "     ";
+            $categoryID = $_POST['category'][$i] . "     ";
+            echo "Category id: " . $categoryID . "     ";
             $standardItemID = $_POST['standard-item'][$i] . "     ";
-            echo "Standard item id: " . $_POST['standard-item'][$i] . "     ";
-            $standardItemFromValue = $_POST['standard-item-value-from'][$i];
-            echo "Standard item values from: " . $_POST['standard-item-value-from'][$i] . "     ";
-            $standardItemToValue = $_POST['standard-item-value-to'][$i];
-            echo "Standard item values to: " . $_POST['standard-item-value-to'][$i] . "     ";
+            echo "Standard item id: " . $standardItemID . "     ";
+            $standardItemDescription = $_POST['description'][$i] . "     ";
+            echo "Standard item id: " . $standardItemDescription . "     ";
+            $standardItemFromValue = $_POST['value-from'][$i];
+            echo "Standard item values from: " . $standardItemFromValue . "     ";
+            $standardItemToValue = $_POST['value-to'][$i];
+            echo "Standard item values to: " . $standardItemToValue . "     ";
 
-            $queryStr = $queryStr . " SELECT boat_standard_items.`boat_id` FROM boat_standard_items ";
-            $queryStr = $queryStr . " WHERE boat_standard_items.`value` BETWEEN " . $standardItemFromValue . " AND " . $standardItemToValue;
-            $queryStr = $queryStr . " AND boat_standard_items.`standard_item_id`=" . $standardItemID;
+//            $queryStr = $queryStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id` ";
+//            $queryStr = $queryStr . " FROM `sequalize`.`boat_standard_items` ";
+//            $queryStr = $queryStr . " HERE `sequalize`.`boat_standard_items`.`standard_item_id`=".$standardItemID." ";
 
-            $i < $brStandardItems - 1
-                ? $queryStr = $queryStr . " UNION "
-                : $queryStr = $queryStr;
+//            if ($standardItemDescription != '') $queryStr = $queryStr . " AND `sequalize`.`boat_standard_items`.`description`=" . $standardItemDescription." ";
+            $hasDimension = false;
+            foreach ($nullDimensions as $dim) {
+                if ($dim['id'] == $standardItemID) $hasDimension = true;
+            }
+//            if($hasDimension) {
+//                $queryStr = $queryStr . " AND `sequalize`.`boat_standard_items`.`value` >=".$standardItemFromValue." ";
+//                $queryStr = $queryStr . " AND `sequalize`.`boat_standard_items`.`value` <=".$standardItemToValue." ";
+//            }
+
+//            if (($i + 1) < $brStandardItems) $queryStr = $queryStr . " UNION ALL ";
+
 
         }
-        $queryStr = $queryStr . " ) ";
+//        $queryStr = $queryStr . "     ) ";
+//        $queryStr = $queryStr . " GROUP BY `sequalize`.`boat_standard_items`.`boat_id` "
+//        $queryStr = $queryStr . " HAVING COUNT(*)>".$brStandardItems." ";
+//        $queryStr = $queryStr . " ) ";
 
 //        echo "|" . $_POST['size-from'] . " - " . $_POST['size-to']. "|";
     }
@@ -175,8 +193,8 @@ function findBoats()
         $builder = $row['builder'];
         $year = $row['year'];
         $country = $row['country'];
-        $description = $row['description'];
-        $boat_size = $row['boat_size'];
+//        $description = $row['description'];
+//        $boat_size = $row['boat_size'];
 
         echo "<a href='http://" . $_SERVER['HTTP_HOST'] . "/boat/boat.php?id=" . $row['id'] . "'>";
         echo "<div class='res' id='$id'>";
@@ -187,9 +205,9 @@ function findBoats()
             Builder: $builder, 
             Country: $country, 
             Boat year: $year,</h4>";
-        echo "<h4 class='col-md-8'>
-            Boat size: $boat_size ft,
-            Description: $description</h4>";
+//        echo "<h4 class='col-md-8'>
+//            Boat size: $boat_size ft,
+//            Description: $description</h4>";
         echo "</div>";
         echo "</a>";
 
@@ -287,6 +305,22 @@ function getBoatStandardItem($categoryId)
     $queryStr = "SELECT id,name FROM standard_items WHERE category_id=" . $categoryId;
     $query = $conn->prepare($queryStr);
     $query->execute();
+    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+    $conn = null;
+
+    return $result;
+}
+
+// Get Boat type informations
+function getStandardItemsNullDimensions()
+{
+    $conn = connection();
+
+    $query = $conn->prepare("SELECT `sequalize`.`standard_items`.`id` 
+                            FROM `sequalize`.`standard_items` 
+                            WHERE `sequalize`.`standard_items`.`dimensions` IS NOT NULL");
+    $query->execute();
+//    $result = $query->fetchAll(PDO::FETCH_ASSOC);
     $result = $query->fetchAll(PDO::FETCH_ASSOC);
     $conn = null;
 

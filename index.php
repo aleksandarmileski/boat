@@ -11,12 +11,17 @@ if (isset($_POST['search'])) {
     $_SESSION['boat-country'] = $_POST['boat-country'];
     $_SESSION['boat-year'] = $_POST['boat-year'];
 
-    //    $_SESSION['standard-item-value-from'] = $_POST['standard-item-value-from'];
-    //    $_SESSION['standard-item-value-to'] = $_POST['standard-item-value-to'];
+    $_SESSION['value-from'] = $_POST['value-from'];
+    $_SESSION['value-to'] = $_POST['value-to'];
 
-//    echo "<pre>";
-//    print_r(count($_POST['standard-item']));
-//    echo "</pre>";
+    $_SESSION['category'] = $_POST['category'];
+    $_SESSION['standard-item'] = $_POST['standard-item'];
+
+    $_SESSION['description'] = $_POST['description'];
+
+    echo "<pre>";
+    print_r($_POST);
+    echo "</pre>";
 
 }
 
@@ -74,35 +79,33 @@ if (isset($_POST['search'])) {
                     <br>
                     <div class="mainStandardItem" id="mainStandardItem">
 
-                        <label for="standard-item-value-from">Boat category:</label><br>
+                        <label >Boat category:</label><br>
                         <select
                             name="category[]"
                             id="category"
                             class="form-control input">
                         </select>
+                        <label >Boat standard item:</label><br>
                         <select
                             name="standard-item[]"
                             id="standard-item"
                             class="form-control input">
                         </select>
+                        <label>Description: </label>
+                        <input type="text"
+                                id="description"
+                                name="description[]"
+                                class="form-control input">
                         <label>from</label>
-                        <input type="number" min="0" step="50"
-                               name="standard-item-value-from[]"
-                               id="standard-item-value-from"
-                               value=<?php if (isset($_SESSION['standard-item-value-from'])) {
-                                   echo $_SESSION['standard-item-value-from'];
-                               } else {
-                                   echo 50;
-                               } ?>
+                        <input type="number" min="0" step="1"
+                               name="value-from[]"
+                               id="value-from"
+                               value=0
                                class="form-control textinput input inlineProp">
-                        <label for="standard-item-value-to">to</label>
-                        <input type="number" step="50" min="0"
-                               id="standard-item-value-to" name="standard-item-value-to[]"
-                               value=<?php if (isset($_SESSION['standard-item-value-to'])) {
-                                   echo $_SESSION['standard-item-value-to'];
-                               } else {
-                                   echo 1500;
-                               } ?>
+                        <label for="value-to">to</label>
+                        <input type="number" step="1" min="0"
+                               id="value-to" name="value-to[]"
+                               value=50
                                class="form-control textinput input inlineProp">
                     </div>
                 </div>
@@ -215,6 +218,7 @@ if (isset($_POST['search'])) {
 <script>
     var categories = <?=json_encode(getBoatCategories()); ?>;
     var standardItems = <?=json_encode(getStandardItems()); ?>;
+    var standardItemsNullDimension = <?=json_encode(getStandardItemsNullDimensions()); ?>;
 </script>
 <script src="https://code.jquery.com/jquery-3.1.1.js"
         integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="

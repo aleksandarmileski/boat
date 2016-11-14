@@ -58,6 +58,9 @@ $("#getContactInfo").on('submit', function (e) {
     e.preventDefault();
 });
 
+$('#value-from').hide();
+$('#value-to').hide();
+
 // Auto fill dropdowns
 $('#category').append("<option id='all' value='all'>All categories</option>");
 categories.forEach(function (category) {
@@ -82,7 +85,6 @@ $(document).on('click', 'select[id^="category"]', function (e) {
     // console.log('Selected category id: ' + $selectedCategoryID);
 
     if ($categoryID == 'category') {
-        // console.log("u ve hited the main category");
         $('#standard-item').empty();
         if ($selectedCategoryID == 'all') {
             standardItems.forEach(function (standardItem) {
@@ -111,7 +113,65 @@ $(document).on('click', 'select[id^="category"]', function (e) {
             });
         }
     }
+
+    $parentID = $(this).parent().attr('id');
+    // console.log('parent id: ' + $parentID);
+    $parentIdIndex = parseInt($parentID.match(/\d+/g), 10);
+    // console.log('parent id: ' + $parentIdIndex);
+
+    toggleStandardItemsValues($parentIdIndex);
+
 });
+
+$(document).on('click', 'select[id^="standard-item"]', function (e) {
+    $selectedCategoryID = $(this).children(":selected").attr("id");
+    // console.log($selectedCategoryID);
+
+    $parentID = $(this).parent().attr('id');
+    // console.log('parent id: ' + $parentID);
+    $parentIdIndex = parseInt($parentID.match(/\d+/g), 10);
+    // console.log('parent id: ' + $parentIdIndex);
+
+    toggleStandardItemsValues($parentIdIndex);
+
+});
+
+function toggleStandardItemsValues($parentIdIndex) {
+    $isFirst = isNaN($parentIdIndex);
+    if ($isFirst) {
+        $selectedStandardItemID = $('#standard-item :selected').attr('id');
+    } else {
+        $selectedStandardItemID = $('#standard-item' + $parentIdIndex + ' :selected').attr('id');
+    }
+    // console.log($selectedStandardItemID);
+    $imaValueInterval = false;
+    standardItemsNullDimension.forEach(function (i) {
+        if (i['id'] == $selectedStandardItemID) {
+            $imaValueInterval = true;
+        }
+    })
+    if ($imaValueInterval) {
+        // console.log("ima interval na vrednosti");
+        if ($isFirst) {
+            $('#value-from').show();
+            $('#value-to').show();
+        } else {
+            $('#value-from' + $parentIdIndex).show();
+            $('#value-to' + $parentIdIndex).show();
+        }
+    }
+    else {
+        // console.log("NEma interval na vrednosti");
+        if ($isFirst) {
+            // console.log("---------" + $parentIdIndex);
+            $('#value-from').hide();
+            $('#value-to').hide();
+        } else {
+            $('#value-from' + $parentIdIndex).hide();
+            $('#value-to' + $parentIdIndex).hide();
+        }
+    }
+}
 
 // Add more categories
 $cloneCounter = 1;
@@ -134,13 +194,35 @@ $(".addCategory").on('click', function (e) {
         if (~this.id.indexOf("standard-item")) {
             this.id = "standard-item" + $cloneCounter;
         }
+        if (~this.id.indexOf("description")) {
+            this.id = "description" + $cloneCounter;
+        }
+        if (~this.id.indexOf("value-from")) {
+            this.id = "value-from" + $cloneCounter;
+        }
+        if (~this.id.indexOf("value-to")) {
+            this.id = "value-to" + $cloneCounter;
+        }
     });
     if (clone.find('button').length == 0) {
         $("<button class='removeCategory btn btn-danger'>Remove category</button>").appendTo(clone);
     }
-    $cloneCounter++;
     // console.log(clone);
     $(clone).insertAfter('div[id^="mainStandardItem"]:last');
+    $('#category' + $cloneCounter).empty();
+    $('#standard-item' + $cloneCounter).empty();
+    // Auto fill dropdowns
+    $('#category' + $cloneCounter).append("<option id='all' value='all'>All categories</option>");
+    categories.forEach(function (category) {
+        // console.log(category['name']);
+        $('#category' + $cloneCounter).append("<option id=" + category['id'] + " value=" + category['id'] + " >" + category['name'] + "</option>");
+    });
+    standardItems.forEach(function (standardItem) {
+        $('#standard-item' + $cloneCounter).append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + " >" + standardItem['name'] + "</option>");
+    });
+    $('#value-from' + $cloneCounter).hide();
+    $('#value-to' + $cloneCounter).hide();
+    $cloneCounter++;
 });
 
 $(document).on('click', '.removeCategory', function (e) {
