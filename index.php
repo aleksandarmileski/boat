@@ -19,9 +19,9 @@ if (isset($_POST['search'])) {
 
     $_SESSION['description'] = $_POST['description'];
 
-    echo "<pre>";
-    print_r($_POST);
-    echo "</pre>";
+//    echo "<pre>";
+//    print_r($_POST);
+//    echo "</pre>";
 
 }
 

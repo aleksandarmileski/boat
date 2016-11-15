@@ -67,88 +67,116 @@ function findBoats()
 {
     $conn = connection();
 
-    $queryStr = "SELECT boats.id as id, 
-              boats.title as title, 
-              types.type as type,
-              photos.location_filename AS photo_url,
-              prices.value as price,
-              builders.name AS builder,
-              boats.year as year,
-              boat_locations.country as country,
-              boat_standard_items.value as boat_size,
-              boat_standard_items.description as description
-     FROM boats        
-        LEFT JOIN boat_types ON boats.id=boat_types.boat_id
-        LEFT JOIN types ON boat_types.type_id=types.id           
-        INNER JOIN photos ON boats.id=photos.boat_id       
-        INNER JOIN prices ON boats.id=prices.boat_id        
-        INNER JOIN builders ON boats.builders_id=builders.id        
-        INNER JOIN boat_locations ON boats.id=boat_locations.boat_id 
-        LEFT JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id
-     WHERE prices.current=1 AND photos.`primaryPhoto`=1 
-        ";
+    $querySelectStr = " ";
+    $queryFromStr = " ";
+    $queryWhereStr = " ";
+
+    $querySelectStr = $querySelectStr . "
+        SELECT boats.id as id, 
+            boats.title as title, 
+            types.type as type,
+            photos.location_filename AS photo_url,
+            prices.value as price,
+            builders.name AS builder,
+            boats.year as year,
+            boat_locations.country as country";
+
+    $queryFromStr = $queryFromStr . " 
+        FROM boats        
+            LEFT JOIN boat_types ON boats.id=boat_types.boat_id
+            LEFT JOIN types ON boat_types.type_id=types.id           
+            INNER JOIN photos ON boats.id=photos.boat_id       
+            INNER JOIN prices ON boats.id=prices.boat_id        
+            INNER JOIN builders ON boats.builders_id=builders.id        
+            INNER JOIN boat_locations ON boats.id=boat_locations.boat_id ";
+
+    $queryWhereStr = $queryWhereStr . " WHERE prices.current=1 AND photos.`primaryPhoto`=1 ";
+
+//    $queryStr = ",
+//              boat_standard_items.value as boat_size,
+//              boat_standard_items.description as description
+//
+//        LEFT JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id
+//        ";
 
 
     // Filter by TYPE
     if ($_POST['boat-type'] != 'all') {
 //        echo "|" . $_POST['boat-type'] . "|";
-        $queryStr = $queryStr . " AND types.id=" . $_POST['boat-type'] . " ";
+        $queryWhereStr = $queryWhereStr . " AND types.id=" . $_POST['boat-type'] . " ";
     }
 
     // Filter by BOAT standard item
-    if (count($_POST['standard-item']) > 0) {
+    $brStandardItems = count($_POST['standard-item']);
+    if ($brStandardItems > 0) {
 
-//        $queryStr = $queryStr . " AND `sequalize`.`boats`.`id` IN (";
-//        $queryStr = $queryStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id`";
-//        $queryStr = $queryStr . "     FROM ( ";
-        $brStandardItems = count($_POST['standard-item']);
         $nullDimensions = getStandardItemsNullDimensions();
-        for ($i = 0; $i < $brStandardItems; $i++) {
-            echo "------";
-            $categoryID = $_POST['category'][$i] . "     ";
-            echo "Category id: " . $categoryID . "     ";
-            $standardItemID = $_POST['standard-item'][$i] . "     ";
-            echo "Standard item id: " . $standardItemID . "     ";
-            $standardItemDescription = $_POST['description'][$i] . "     ";
-            echo "Standard item id: " . $standardItemDescription . "     ";
-            $standardItemFromValue = $_POST['value-from'][$i];
-            echo "Standard item values from: " . $standardItemFromValue . "     ";
-            $standardItemToValue = $_POST['value-to'][$i];
-            echo "Standard item values to: " . $standardItemToValue . "     ";
 
-//            $queryStr = $queryStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id` ";
-//            $queryStr = $queryStr . " FROM `sequalize`.`boat_standard_items` ";
-//            $queryStr = $queryStr . " HERE `sequalize`.`boat_standard_items`.`standard_item_id`=".$standardItemID." ";
+        if (($_POST['category'][0] != 'all')
+            || ($_POST['standard-item'][0] != 1)
+            || (trim($_POST['description'][0]) != '')
+            || ($brStandardItems > 1)
+        ) {
+            // -Q-
+            $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boats`.`id` IN ( ";
+            $queryWhereStr = $queryWhereStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id`";
+            $queryWhereStr = $queryWhereStr . " FROM ( ";
+            for ($i = 0; $i < $brStandardItems; $i++) {
+                $categoryID = $_POST['category'][$i];
+//            echo "Category id: |" . $categoryID . "|     ";
+                $standardItemID = $_POST['standard-item'][$i];
+//            echo "Standard item id: |" . $standardItemID . "|     ";
+                $standardItemDescription = trim($_POST['description'][$i]);
+//            echo "Standard item description: |" . $standardItemDescription . "|     ";
+                $standardItemFromValue = $_POST['value-from'][$i];
+//            echo "Standard item values from: " . $standardItemFromValue . "     ";
+                $standardItemToValue = $_POST['value-to'][$i];
+//            echo "Standard item values to: " . $standardItemToValue . "     ";
 
-//            if ($standardItemDescription != '') $queryStr = $queryStr . " AND `sequalize`.`boat_standard_items`.`description`=" . $standardItemDescription." ";
-            $hasDimension = false;
-            foreach ($nullDimensions as $dim) {
-                if ($dim['id'] == $standardItemID) $hasDimension = true;
+                // -Q-
+                $queryWhereStr = $queryWhereStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id` ";
+                $queryWhereStr = $queryWhereStr . " FROM `sequalize`.`boat_standard_items` ";
+                $queryWhereStr = $queryWhereStr . " WHERE `sequalize`.`boat_standard_items`.`standard_item_id`=" . $standardItemID . " ";
+
+                // -Q-
+                if ($standardItemDescription != '') {
+                    $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`description` LIKE '%" . $standardItemDescription . "%' ";
+                }
+                $hasDimension = false;
+
+                // !!!!!!!! Added " " at the and of the string
+                $standardItemID = trim($standardItemID);
+                foreach ($nullDimensions as $dim) {
+//                echo "||".gettype($standardItemID)."==".gettype($dim['id']);
+//                echo $standardItemID."==".$dim['id']."||";
+                    if ($dim['id'] == $standardItemID) $hasDimension = true;
+                }
+
+                if ($hasDimension) {
+                    // -Q-
+                    $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`value` >=" . $standardItemFromValue . " ";
+                    $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`value` <=" . $standardItemToValue . " ";
+                }
+
+                if (($i + 1) < $brStandardItems) $queryWhereStr = $queryWhereStr . " UNION ALL ";
+
             }
-//            if($hasDimension) {
-//                $queryStr = $queryStr . " AND `sequalize`.`boat_standard_items`.`value` >=".$standardItemFromValue." ";
-//                $queryStr = $queryStr . " AND `sequalize`.`boat_standard_items`.`value` <=".$standardItemToValue." ";
-//            }
-
-//            if (($i + 1) < $brStandardItems) $queryStr = $queryStr . " UNION ALL ";
-
-
-        }
-//        $queryStr = $queryStr . "     ) ";
-//        $queryStr = $queryStr . " GROUP BY `sequalize`.`boat_standard_items`.`boat_id` "
-//        $queryStr = $queryStr . " HAVING COUNT(*)>".$brStandardItems." ";
-//        $queryStr = $queryStr . " ) ";
+            // -Q-
+            $queryWhereStr = $queryWhereStr . "     ) boat_standard_items ";
+            $queryWhereStr = $queryWhereStr . " GROUP BY `sequalize`.`boat_standard_items`.`boat_id` ";
+            $queryWhereStr = $queryWhereStr . " HAVING COUNT(*)>" . ($brStandardItems - 1) . " ";
+            $queryWhereStr = $queryWhereStr . " ) ";
 
 //        echo "|" . $_POST['size-from'] . " - " . $_POST['size-to']. "|";
+        }
     }
-
     // Filter by PRICE
     if ($_POST['price-from'] != '' || $_POST['price-to'] != '') {
         if ($_POST['price-from'] != '') {
-            $queryStr = $queryStr . " AND prices.`value` >=" . $_POST['price-from'] . " ";
+            $queryWhereStr = $queryWhereStr . " AND prices.`value` >=" . $_POST['price-from'] . " ";
         }
         if ($_POST['price-to'] != '') {
-            $queryStr = $queryStr . " AND prices.`value` <=" . $_POST['price-to'] . " ";
+            $queryWhereStr = $queryWhereStr . " AND prices.`value` <=" . $_POST['price-to'] . " ";
         }
 //        echo "|" .$_POST['price-from'] . " - " . $_POST['price-to']. "|";
     }
@@ -156,29 +184,46 @@ function findBoats()
     // Filter by BUILDER
     if ($_POST['boat-builder'] != 'all') {
 //        echo "|" .$_POST['boat-builder']. "|";
-        $queryStr = $queryStr . " AND builders.`name`='" . $_POST['boat-builder'] . "'";
+        $queryWhereStr = $queryWhereStr . " AND builders.`name`='" . $_POST['boat-builder'] . "'";
     }
 
     // Filter by COUNTRY
     if ($_POST['boat-country'] != 'all') {
 //        echo "|" .$_POST['boat-country']. "|";
-        $queryStr = $queryStr . " AND boat_locations.`country`='" . $_POST['boat-country'] . "'";
+        $queryWhereStr = $queryWhereStr . " AND boat_locations.`country`='" . $_POST['boat-country'] . "'";
     }
 
     // Filter by built YEAR
     if ($_POST['boat-year'] != 'all') {
 //        echo "|" .$_POST['boat-year']. "|";
-        $queryStr = $queryStr . " AND boats.`year`>='" . $_POST['boat-year'] . "'";
+        $queryWhereStr = $queryWhereStr . " AND boats.`year`>='" . $_POST['boat-year'] . "'";
     }
 
     // Filter by KEYWORD
     if ($_POST['boat-keyword'] != '') {
 //        echo "|" .$_POST['boat-keyword']. "|";
-        $queryStr = $queryStr . " AND boats.`title` LIKE '%" . $_POST['boat-keyword'] . "%' OR boats.title LIKE '%" . $_POST['boat-keyword'] . "%'";
+        $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`description` LIKE '%" . $_POST['boat-keyword'] . " ";
     }
 
-    $queryStr = $queryStr . " GROUP BY boats.id LIMIT 100";
-    echo $queryStr;
+    if (($_POST['category'][0] != 'all')
+        || ($_POST['standard-item'][0] != 1)
+        || (trim($_POST['description'][0]) != '')
+        || ($brStandardItems > 1)
+        || (trim($_POST['boat-keyword'] != ''))
+    ) {
+        $querySelectStr = $querySelectStr . ",
+                boat_standard_items.value as boat_size,
+                boat_standard_items.description as description";
+        $queryFromStr = $queryFromStr . " LEFT JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id ";
+    }
+
+    $queryWhereStr = $queryWhereStr . " GROUP BY boats.id LIMIT 1000";
+
+    $queryStr = $querySelectStr . $queryFromStr . $queryWhereStr;
+
+//    echo "------ Query -----";
+//    echo $queryStr;
+
     $result = $conn->query($queryStr);
 
     $brBoats = 0;
