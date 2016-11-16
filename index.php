@@ -30,7 +30,7 @@ if (isset($_POST['search'])) {
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Boat Search</title>
@@ -60,7 +60,6 @@ if (isset($_POST['search'])) {
                 <select id="boat-type" class="form-control input" name="boat-type">
                     <option value="all">All boats</option>
                     <?php
-
                     $types = getBoatTypes();
                     foreach ($types as $type): ?>
                         <option value="<?php echo $type['id']; ?>"
@@ -140,6 +139,9 @@ if (isset($_POST['search'])) {
                                     echo $contains
                                         ? ""
                                         : "style='display:none'";
+                                }
+                                if ((!isset($_POST['standard-item'])) && (!isset($_SESSION['standard-item']))) {
+                                    echo "style='display:none'";
                                 }
                                 ?>
                             >
@@ -266,11 +268,28 @@ if (isset($_POST['search'])) {
     <div class="col-md-6 pull-right">
         <?php
         if (isset($_POST['search']) || isset($_SESSION['search'])) {
-            findBoats();
+            $boats = findBoats();
         } else {
-            getRandomBoats();
+            $boats = getRandomBoats();
         }
         ?>
+        <div>
+            <h3>Boats found: <?= count($boats); ?></h3>
+            <?php foreach ($boats as $boat): ?>
+                <a href="http://<?= $_SERVER['HTTP_HOST']; ?>/boat/boat.php?id=<?= $boat['id']; ?>">
+                    <div class='res grow' id='$id'>
+                        <div class='col-md-4'>
+                            <img src="<?= $photoUrl; ?><?= $boat['photo_url']; ?>" class='image-rounded grow'
+                                 height=100>
+                        </div>
+                        <h3 id='title' class='col-md-8'><?= $boat['title']; ?></h3>
+                        <h4 class='col-md-8'> Type: <?= $boat['type']; ?>, Price: <?= $boat['price']; ?> &euro;,
+                            Builder: <?= $boat['builder']; ?>, Country: <?= $boat['country']; ?>,
+                            Boat year: <?= $boat['year']; ?></h4>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
     </div>
     <div class="clear">
 

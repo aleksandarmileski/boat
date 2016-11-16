@@ -1,66 +1,61 @@
 <?php
 include "db.php";
 
+$photoUrl = "http://46.101.221.106/images/";
 // Return random boats
 function getRandomBoats()
 {
-
-    $photoUrl = "http://46.101.221.106/images/";
 //    $photoUrl = "http://" . $_SERVER['HTTP_HOST'] . "/images/";
 
     $conn = connection();
 
-    $result = $conn->query("SELECT  boats.id as id, boats.title as title, 
-
-            types.type as type, 
-            
-            photos.location_filename as photo_url, 
-            
-            prices.value as price, 
-            
-            builders.name as builder, 
-            
-            boat_locations.country as country,
-            
-            boats.year as year
-
+    $queryStr = "
+        SELECT boats.id as id, 
+            boats.title as title, 
+            types.type as type,
+            photos.location_filename AS photo_url,
+            prices.value as price,
+            builders.name AS builder,
+            boats.year as year,
+            boat_locations.country as country
         FROM boats
-
-        LEFT JOIN boat_types ON boats.id=boat_types.boat_id
-        LEFT JOIN types ON boat_types.type_id=types.id
-
-        LEFT JOIN photos ON boats.id=photos.boat_id
-        
-        LEFT JOIN prices ON boats.id=prices.boat_id
-        
-        LEFT JOIN builders ON boats.builders_id=builders.id
-        
-        LEFT JOIN boat_locations ON boats.id=boat_locations.boat_id
-
-
+            LEFT JOIN boat_types ON boats.id=boat_types.boat_id
+            LEFT JOIN types ON boat_types.type_id=types.id
+            INNER JOIN photos ON boats.id=photos.boat_id
+            INNER JOIN prices ON boats.id=prices.boat_id
+            INNER JOIN builders ON boats.builders_id=builders.id
+            INNER JOIN boat_locations ON boats.id=boat_locations.boat_id
         WHERE prices.current = 1 AND photos.primaryPhoto = 1
-        LIMIT 50 OFFSET 178");
+        LIMIT 1000";
 
-    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-        $id = $row['id'];
-        $title = $row['title'];
-        $type = $row['type'];
-        $photo = $row['photo_url'];
-        $price = $row['price'];
-        $builder = $row['builder'];
-        $country = $row['country'];
-        $year = $row['year'];
+//    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+//        $id = $row['id'];
+//        $title = $row['title'];
+//        $type = $row['type'];
+//        $photo = $row['photo_url'];
+//        $price = $row['price'];
+//        $builder = $row['builder'];
+//        $country = $row['country'];
+//        $year = $row['year'];
+//
+//        echo "<a href='http://" . $_SERVER['HTTP_HOST'] . "/boat/boat.php?id=" . $id . "'>";
+//        echo "<div class='res grow' id='$id'>";
+//        echo "<img src='http://46.101.221.106/images/" . $photo . "' class='img-responsive img-fix grow col-md-4' >";
+//        echo "<h3 id='title' class='col-md-8'>$title</h3>";
+//        echo "<span class='col-md-6'>Type: {$type}, <br /> Price {$price} &euro;, <br /> Builder: {$builder}, <br /> Currently lying: {$country}</span>";
+//        echo "</div>";
+//        echo "</a>";
+//        echo "<hr />";
+//    }
 
-        echo "<a href='http://" . $_SERVER['HTTP_HOST'] . "/boat/boat.php?id=" . $id . "'>";
-        echo "<div class='res grow' id='$id'>";
-        echo "<img src='http://46.101.221.106/images/" . $photo . "' class='img-responsive img-fix grow col-md-4' >";
-        echo "<h3 id='title' class='col-md-8'>$title</h3>";
-        echo "<span class='col-md-6'>Type: {$type}, <br /> Price {$price} &euro;, <br /> Builder: {$builder}, <br /> Currently lying: {$country}</span>";
-        echo "</div>";
-        echo "</a>";
-        echo "<hr />";
-    }
+    $query = $conn->prepare($queryStr);
+    $query->execute();
+    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+
     $conn = null;
+
+    return $result;
+
 }
 
 function findBoats()
@@ -242,41 +237,47 @@ function findBoats()
 //    echo "------ Query -----";
 //    echo $queryStr;
 
-    $result = $conn->query($queryStr);
+//    $result = $conn->query($queryStr);
+//    $brBoats = 0;
+//    $photoUrl = "http://46.101.221.106/images/";
+//    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+//        $brBoats++;
+//        $id = $row['id'];
+//        $title = $row['title'];
+//        $type = $row['type'];
+//        $photo = $row['photo_url'];
+//        $price = $row['price'];
+//        $builder = $row['builder'];
+//        $year = $row['year'];
+//        $country = $row['country'];
+////        $description = $row['description'];
+////        $boat_size = $row['boat_size'];
+//
+//        echo "<a href='http://" . $_SERVER['HTTP_HOST'] . "/boat/boat.php?id=" . $row['id'] . "'>";
+//        echo "<div class='res' id='$id'>";
+//        echo "<div class='col-md-4'><img src='" . $photoUrl . "" . $photo . "' class='image-rounded' height=\"100\" ></div>";
+//        echo "<h3 id='title' class='col-md-8'>Title: $title</h3>
+//            <h4 class='col-md-8'> Type: $type,
+//            Price: $price &euro;,
+//            Builder: $builder,
+//            Country: $country,
+//            Boat year: $year,</h4>";
+////        echo "<h4 class='col-md-8'>
+////            Boat size: $boat_size ft,
+////            Description: $description</h4>";
+//        echo "</div>";
+//        echo "</a>";
+//
+//    }
+//    echo "Number of search results: " . $brBoats;
 
-    $brBoats = 0;
-    $photoUrl = "http://46.101.221.106/images/";
-    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-        $brBoats++;
-        $id = $row['id'];
-        $title = $row['title'];
-        $type = $row['type'];
-        $photo = $row['photo_url'];
-        $price = $row['price'];
-        $builder = $row['builder'];
-        $year = $row['year'];
-        $country = $row['country'];
-//        $description = $row['description'];
-//        $boat_size = $row['boat_size'];
+    $query = $conn->prepare($queryStr);
+    $query->execute();
+    $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        echo "<a href='http://" . $_SERVER['HTTP_HOST'] . "/boat/boat.php?id=" . $row['id'] . "'>";
-        echo "<div class='res' id='$id'>";
-        echo "<div class='col-md-4'><img src='" . $photoUrl . "" . $photo . "' class='image-rounded' height=\"100\" ></div>";
-        echo "<h3 id='title' class='col-md-8'>Title: $title</h3>
-            <h4 class='col-md-8'> Type: $type, 
-            Price: $price &euro;, 
-            Builder: $builder, 
-            Country: $country, 
-            Boat year: $year,</h4>";
-//        echo "<h4 class='col-md-8'>
-//            Boat size: $boat_size ft,
-//            Description: $description</h4>";
-        echo "</div>";
-        echo "</a>";
-
-    }
-    echo "Number of search results: " . $brBoats;
     $conn = null;
+
+    return $result;
 
 }
 
