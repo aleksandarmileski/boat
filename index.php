@@ -3,6 +3,9 @@ session_start();
 require "functions.php";
 
 if (isset($_POST['search'])) {
+
+    $_SESSION['search'] = $_POST['search'];
+
     $_SESSION['boat-type'] = $_POST['boat-type'];
     $_SESSION['price-from'] = $_POST['price-from'];
     $_SESSION['price-to'] = $_POST['price-to'];
@@ -124,7 +127,22 @@ if (isset($_POST['search'])) {
                                    id="description<?php echo $i > 0 ? $i : ""; ?>"
                                    name="description[]"
                                    class="form-control input">
-                            <div id="dimensionValues<?php echo $i > 0 ? $i : ""; ?>">
+
+                            <div id="dimensionValues<?php echo $i > 0 ? $i : ""; ?>"
+                                <?php
+                                if (isset($_SESSION['standard-item'])) {
+//                                echo $_SESSION['standard-item'][$i];
+                                    $nullDimensions = getStandardItemsNullDimensions();
+                                    $contains = false;
+                                    foreach ($nullDimensions as $dim) {
+                                        if ($_SESSION['standard-item'][$i] == $dim['id']) $contains = true;
+                                    }
+                                    echo $contains
+                                        ? ""
+                                        : "style='display:none'";
+                                }
+                                ?>
+                            >
                                 <label>from</label>
                                 <input type="number" min="0" step="1"
                                        name="value-from[]"
@@ -152,6 +170,7 @@ if (isset($_POST['search'])) {
                         </div>
                     <?php endfor; ?>
                 </div>
+                <br>
                 <button class="addCategory btn btn-search col-md-12">Add category</button>
                 <br><br>
 
@@ -169,7 +188,7 @@ if (isset($_POST['search'])) {
                        value=<?php if (isset($_SESSION['price-to'])) {
                            echo $_SESSION['price-to'];
                        } else {
-                           echo 15000;
+                           echo 150000;
                        } ?>
                        class="form-control textinput input inlineProp">
                 <label for="price-from">&euro;</label><br>
@@ -246,7 +265,7 @@ if (isset($_POST['search'])) {
 
     <div class="col-md-6 pull-right">
         <?php
-        if (isset($_POST['search'])) {
+        if (isset($_POST['search']) || isset($_SESSION['search'])) {
             findBoats();
         } else {
             getRandomBoats();
