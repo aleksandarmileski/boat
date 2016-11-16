@@ -92,14 +92,6 @@ function findBoats()
 
     $queryWhereStr = $queryWhereStr . " WHERE prices.current=1 AND photos.`primaryPhoto`=1 ";
 
-//    $queryStr = ",
-//              boat_standard_items.value as boat_size,
-//              boat_standard_items.description as description
-//
-//        LEFT JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id
-//        ";
-
-
     // Filter by TYPE
     if ($_POST['boat-type'] != 'all') {
 //        echo "|" . $_POST['boat-type'] . "|";

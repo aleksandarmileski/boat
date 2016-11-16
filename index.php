@@ -76,38 +76,81 @@ if (isset($_POST['search'])) {
                 <div class="standardItems">
                     <label for="standard-item-value-from">Boat standard items:</label>
                     <hr>
-                    <br>
-                    <div class="mainStandardItem" id="mainStandardItem">
+                    <?php
 
-                        <label >Boat category:</label><br>
-                        <select
-                            name="category[]"
-                            id="category"
-                            class="form-control input">
-                        </select>
-                        <label >Boat standard item:</label><br>
-                        <select
-                            name="standard-item[]"
-                            id="standard-item"
-                            class="form-control input">
-                        </select>
-                        <label>Description: </label>
-                        <input type="text"
-                                id="description"
-                                name="description[]"
+                    isset($_SESSION['category'])
+                        ? $cycleNo = count($_SESSION['category'])
+                        : $cycleNo = 1;
+
+                    for ($i = 0; $i < $cycleNo; $i++):
+//                        if (isset($_SESSION['standard-item'])) print_r($_SESSION['standard-item'][$i]);
+
+                        ?>
+                        <div class="mainStandardItem" id="mainStandardItem<?php echo $i > 0 ? $i : ""; ?>">
+                            <label>Boat category:</label><br>
+                            <select
+                                name="category[]"
+                                id="category<?php echo $i > 0 ? $i : ""; ?>"
                                 class="form-control input">
-                        <label>from</label>
-                        <input type="number" min="0" step="1"
-                               name="value-from[]"
-                               id="value-from"
-                               value=0
-                               class="form-control textinput input inlineProp">
-                        <label for="value-to">to</label>
-                        <input type="number" step="1" min="0"
-                               id="value-to" name="value-to[]"
-                               value=50
-                               class="form-control textinput input inlineProp">
-                    </div>
+                                <option id='all'
+                                        value='all'>
+                                    All categories
+                                </option>
+                                <?php $categories = getBoatCategories();
+                                for ($iCat = 0; $iCat < count($categories); $iCat++): ?>
+                                    <option id="<?= $categories[$iCat]['id']; ?>"
+                                            value="<?= $categories[$iCat]['id']; ?>"
+                                        <?php if (isset($_SESSION['category']) && ($_SESSION['category'][$i] == $categories[$iCat]['id'])) echo "selected"; ?>>
+                                        <?= $categories[$iCat]['name']; ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                            <label>Boat standard item:</label><br>
+                            <select
+                                name="standard-item[]"
+                                id="standard-item<?php echo $i > 0 ? $i : ""; ?>"
+                                class="form-control input">
+                                <?php $standardItems = getStandardItems();
+                                for ($iSI = 0; $iSI < count($standardItems); $iSI++): ?>
+                                    <option id="<?= $standardItems[$iSI]['id']; ?>"
+                                            value="<?= $standardItems[$iSI]['id']; ?>"
+                                        <?php if (isset($_SESSION['standard-item']) && ($_SESSION['standard-item'][$i] == $standardItems[$iSI]['id'])) echo "selected"; ?>>
+                                        <?= $standardItems[$iSI]['name']; ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                            <label>Description: </label>
+                            <input type="text"
+                                   id="description<?php echo $i > 0 ? $i : ""; ?>"
+                                   name="description[]"
+                                   class="form-control input">
+                            <div id="dimensionValues<?php echo $i > 0 ? $i : ""; ?>">
+                                <label>from</label>
+                                <input type="number" min="0" step="1"
+                                       name="value-from[]"
+                                       id="value-from<?php echo $i > 0 ? $i : ""; ?>"
+                                       value=<?php if (isset($_SESSION['value-from'][$i])) {
+                                           echo $_SESSION['value-from'][$i];
+                                       } else {
+                                           echo 0;
+                                       } ?>
+                                       class="form-control textinput input inlineProp">
+                                <label>to</label>
+                                <input type="number" step="1" min="0"
+                                       id="value-to<?php echo $i > 0 ? $i : ""; ?>"
+                                       name="value-to[]"
+                                       value=<?php if (isset($_SESSION['value-to'][$i])) {
+                                           echo $_SESSION['value-to'][$i];
+                                       } else {
+                                           echo 50;
+                                       } ?>
+                                       class="form-control textinput input inlineProp">
+                            </div>
+                            <?php if ($i > 0) : ?>
+                                <button class='removeCategory btn btn-danger'>Remove category</button>
+                            <?php endif ?>
+                        </div>
+                    <?php endfor; ?>
                 </div>
                 <button class="addCategory btn btn-search col-md-12">Add category</button>
                 <br><br>

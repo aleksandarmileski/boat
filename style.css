@@ -28,7 +28,7 @@ div.clear {
     float: left;
     margin-top: 10px;
     width: 100%;
-    padding-top:10px;
+    padding-top: 10px;
 }
 
 .res:hover {
@@ -38,7 +38,6 @@ div.clear {
 .res span {
     float: left;
 }
-
 
 .textinput {
     width: 40%;
@@ -66,26 +65,26 @@ hr {
 }
 
 .dimension hr {
-	margin: 5px;
+    margin: 5px;
 }
 
 p {
-	float: left;
+    float: left;
 }
 
 h3 {
     float: left;
     color: #004237;
     font-weight: bold;
-    margin: 0; !important;
+    margin: 0;
+!important;
 
 }
 
 h4 {
     float: left;
-    font-weight: lighter; !important;
-
-
+    font-weight: lighter;
+!important;
 
 }
 
@@ -136,7 +135,7 @@ a p:hover {
 
 .input:focus {
     outline: none !important;
-    border:1px solid #004237;
+    border: 1px solid #004237;
     box-shadow: 0 0 10px #94cdba;
 }
 
@@ -150,19 +149,19 @@ a p:hover {
 
 /*new style*/
 .slideImages {
-	float: right;
+    float: right;
 }
 
 .w3-display-right {
-	right: 3%;
+    right: 3%;
 }
 
 .w3-display-left {
-	left: 3%;
+    left: 3%;
 }
 
-.foot{
-	margin-top: 30px;
+.foot {
+    margin-top: 30px;
     height: 200px;
     background-color: #94cdba;
 }
@@ -191,7 +190,7 @@ tbody tr:hover {
 
 .sArea button {
     background-color: #004237;
-    color:white;
+    color: white;
 }
 
 /* Always set the map height explicitly to define the size of the div
@@ -200,8 +199,14 @@ tbody tr:hover {
     height: 500px;
     width: 100%;
 }
-.grow { transition: all .2s ease-in-out; }
-.grow:hover { transform: scale(1.1); }
+
+.grow {
+    transition: all .2s ease-in-out;
+}
+
+.grow:hover {
+    transform: scale(1.1);
+}
 
 .img-fix {
     border: 1px transparent;
@@ -212,18 +217,21 @@ tbody tr:hover {
 label.p {
     font-weight: 200;
 }
-hr{
+
+hr {
     border: 0;
     height: 1px;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
     margin-top: 25px;
     padding-top: 2px;
 }
+
 body {
     font-family: 'Roboto', sans-serif !important;
     font-family: 'Shrikhand', cursive;
     background-color: lightgray;
 }
+
 .slideImagesFix {
     border: 1px solid transparent;
     border-radius: 5px;
@@ -231,6 +239,7 @@ body {
 }
 
 span {
-    font-weight: lighter; !important;
+    font-weight: lighter;
+!important;
     text-underline: dash;
 }

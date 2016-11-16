@@ -58,18 +58,17 @@ $("#getContactInfo").on('submit', function (e) {
     e.preventDefault();
 });
 
-$('#value-from').hide();
-$('#value-to').hide();
+// $('#dimensionValues').hide();
 
-// Auto fill dropdowns
-$('#category').append("<option id='all' value='all'>All categories</option>");
-categories.forEach(function (category) {
-    // console.log(category['name']);
-    $('#category').append("<option id=" + category['id'] + " value=" + category['id'] + " >" + category['name'] + "</option>");
-});
-standardItems.forEach(function (standardItem) {
-    $('#standard-item').append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + " >" + standardItem['name'] + "</option>");
-});
+// // Auto fill dropdowns
+// $('#category').append("<option id='all' value='all'>All categories</option>");
+// categories.forEach(function (category) {
+//     // console.log(category['name']);
+//     $('#category').append("<option id=" + category['id'] + " value=" + category['id'] + " >" + category['name'] + "</option>");
+// });
+// standardItems.forEach(function (standardItem) {
+//     $('#standard-item').append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + " >" + standardItem['name'] + "</option>");
+// });
 
 // Print Div id
 $(document).on('click', 'div[id^="mainStandardItem"]', function (e) {
@@ -151,24 +150,21 @@ function toggleStandardItemsValues($parentIdIndex) {
         }
     })
     if ($imaValueInterval) {
-        // console.log("ima interval na vrednosti");
+        console.log("ima interval na vrednosti");
         if ($isFirst) {
-            $('#value-from').show();
-            $('#value-to').show();
+            $('#dimensionValues').show();
         } else {
-            $('#value-from' + $parentIdIndex).show();
-            $('#value-to' + $parentIdIndex).show();
+            $('#dimensionValues' + $parentIdIndex).show();
         }
     }
     else {
         // console.log("NEma interval na vrednosti");
         if ($isFirst) {
             // console.log("---------" + $parentIdIndex);
-            $('#value-from').hide();
-            $('#value-to').hide();
+            $('#dimensionValues').hide();
+
         } else {
-            $('#value-from' + $parentIdIndex).hide();
-            $('#value-to' + $parentIdIndex).hide();
+            $('#dimensionValues' + $parentIdIndex).hide();
         }
     }
 }
@@ -203,6 +199,9 @@ $(".addCategory").on('click', function (e) {
         if (~this.id.indexOf("value-to")) {
             this.id = "value-to" + $cloneCounter;
         }
+        if (~this.id.indexOf("dimensionValues")) {
+            this.id = "dimensionValues" + $cloneCounter;
+        }
     });
     if (clone.find('button').length == 0) {
         $("<button class='removeCategory btn btn-danger'>Remove category</button>").appendTo(clone);
@@ -220,8 +219,7 @@ $(".addCategory").on('click', function (e) {
     standardItems.forEach(function (standardItem) {
         $('#standard-item' + $cloneCounter).append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + " >" + standardItem['name'] + "</option>");
     });
-    $('#value-from' + $cloneCounter).hide();
-    $('#value-to' + $cloneCounter).hide();
+    $('#dimensionValues' + $cloneCounter).hide();
     $cloneCounter++;
 });
 
