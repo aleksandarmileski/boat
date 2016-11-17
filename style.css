@@ -103,21 +103,21 @@ h4 {
     background-color: #94cdba;
 }
 
-a {
+.boatLink {
     color: #004237;
     text-decoration: none;
     float: left;
     width: 100%;
 }
 
-a:hover {
+.boatLink:hover {
     color: #004237;
     text-decoration: none;
     cursor: pointer !important;
     font-weight: bold;
 }
 
-a p:hover {
+.boatLink p:hover {
     font-weight: bold;
 
 }
@@ -242,4 +242,8 @@ span {
     font-weight: lighter;
 !important;
     text-underline: dash;
+}
+
+#pagination {
+    width: 100%;
 }

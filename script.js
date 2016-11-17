@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(function () {
     $("#sh").on('click', function () {
         if ($("#sh").text() == "Show aditional search properties") {
             $("#sh").text("Hide aditional search properties");
@@ -227,4 +227,8 @@ $(document).on('click', '.removeCategory', function (e) {
     e.preventDefault();
     $divId = $(this).closest("div").prop("id");
     $("#" + $divId).remove();
+});
+
+$(document).on('click', '#search', function (e) {
+    sessionStorage.clear();
 });

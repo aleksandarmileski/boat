@@ -35,9 +35,8 @@ if (isset($_POST['search'])) {
     <meta charset="UTF-8">
     <title>Boat Search</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css"
+          integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
@@ -273,39 +272,53 @@ if (isset($_POST['search'])) {
             $boats = getRandomBoats();
         }
         ?>
-        <div>
+        <div id="boatList">
             <h3>Boats found: <?= count($boats); ?></h3>
+            <?php $i = 0; ?>
             <?php foreach ($boats as $boat): ?>
-                <a href="http://<?= $_SERVER['HTTP_HOST']; ?>/boat/boat.php?id=<?= $boat['id']; ?>">
-                    <div class='res grow' id='$id'>
-                        <div class='col-md-4'>
-                            <img src="<?= $photoUrl; ?><?= $boat['photo_url']; ?>" class='image-rounded grow'
-                                 height=100>
+                <div class="boats" id="<?= $i; ?>">
+                    <a href="http://<?= $_SERVER['HTTP_HOST']; ?>/boat/boat.php?id=<?= $boat['id']; ?>"
+                       class="boatLink">
+                        <div class='res grow' id='$id'>
+                            <div class='col-md-4'>
+                                <img src="<?= $photoUrl; ?><?= $boat['photo_url']; ?>" class='image-rounded grow'
+                                     height=100>
+                            </div>
+                            <h3 id='title' class='col-md-8'><?= $boat['title']; ?></h3>
+                            <h4 class='col-md-8'> Type: <?= $boat['type']; ?>, Price: <?= $boat['price']; ?> &euro;,
+                                Builder: <?= $boat['builder']; ?>, Country: <?= $boat['country']; ?>,
+                                Boat year: <?= $boat['year']; ?></h4>
                         </div>
-                        <h3 id='title' class='col-md-8'><?= $boat['title']; ?></h3>
-                        <h4 class='col-md-8'> Type: <?= $boat['type']; ?>, Price: <?= $boat['price']; ?> &euro;,
-                            Builder: <?= $boat['builder']; ?>, Country: <?= $boat['country']; ?>,
-                            Boat year: <?= $boat['year']; ?></h4>
-                    </div>
-                </a>
+                    </a>
+                </div>
+                <?php $i++; ?>
             <?php endforeach; ?>
         </div>
+        <?php if (count($boats) > 0) : ?>
+            <div id="pagination"></div>
+        <?php endif; ?>
     </div>
-    <div class="clear">
 
-    </div>
 </div>
 
 <script>
     var categories = <?=json_encode(getBoatCategories()); ?>;
     var standardItems = <?=json_encode(getStandardItems()); ?>;
     var standardItemsNullDimension = <?=json_encode(getStandardItemsNullDimensions()); ?>;
+    var boatsNo = <?=json_encode(ceil(count($boats) / 10)); ?>;
+
 </script>
 <script src="https://code.jquery.com/jquery-3.1.1.js"
         integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
         crossorigin="anonymous"></script>
-
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"
+        integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js"
+        integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU"
+        crossorigin="anonymous"></script>
+<script src="jquery.twbsPagination.js" type="text/javascript"></script>
+<script src="pagination.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
