@@ -354,7 +354,7 @@ function getStandardItems()
 {
     $conn = connection();
 
-    $query = $conn->prepare("SELECT id,name,category_id FROM standard_items");
+    $query = $conn->prepare("SELECT id,name,category_id FROM standard_items WHERE category_id IS NOT NULL");
     $query->execute();
     $result = $query->fetchAll(PDO::FETCH_ASSOC);
     $conn = null;

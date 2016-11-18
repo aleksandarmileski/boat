@@ -247,3 +247,7 @@ span {
 #pagination {
     width: 100%;
 }
+
+.categoryBackground {
+    background-color: #94cdba;
+}

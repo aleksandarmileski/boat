@@ -88,62 +88,41 @@ if (isset($_POST['search'])) {
 
                         ?>
                         <div class="mainStandardItem" id="mainStandardItem<?php echo $i > 0 ? $i : ""; ?>">
-                            <label>Boat category:</label><br>
-                            <select
-                                name="category[]"
-                                id="category<?php echo $i > 0 ? $i : ""; ?>"
-                                class="form-control input">
-                                <option id='all'
-                                        value='all'>
-                                    All categories
-                                </option>
-                                <?php $categories = getBoatCategories();
-                                for ($iCat = 0; $iCat < count($categories); $iCat++): ?>
-                                    <option id="<?= $categories[$iCat]['id']; ?>"
-                                            value="<?= $categories[$iCat]['id']; ?>"
-                                        <?php if (isset($_SESSION['category']) && ($_SESSION['category'][$i] == $categories[$iCat]['id'])) echo "selected"; ?>>
-                                        <?= $categories[$iCat]['name']; ?>
-                                    </option>
-                                <?php endfor; ?>
-                            </select>
-                            <label>Boat standard item:</label><br>
-                            <select
-                                name="standard-item[]"
-                                id="standard-item<?php echo $i > 0 ? $i : ""; ?>"
-                                class="form-control input">
-                                <?php $standardItems = getStandardItems();
-                                for ($iSI = 0; $iSI < count($standardItems); $iSI++): ?>
-                                    <option id="<?= $standardItems[$iSI]['id']; ?>"
-                                            value="<?= $standardItems[$iSI]['id']; ?>"
-                                        <?php if (isset($_SESSION['standard-item']) && ($_SESSION['standard-item'][$i] == $standardItems[$iSI]['id'])) echo "selected"; ?>>
-                                        <?= $standardItems[$iSI]['name']; ?>
-                                    </option>
-                                <?php endfor; ?>
-                            </select>
+                            <!-- only standard items-->
+                            <div>
+                                <label>Boat standard item:</label><br>
+                                <select
+                                    name="standard-item[]"
+                                    id="standard-item<?php echo $i > 0 ? $i : ""; ?>"
+                                    class="form-control input">
+                                    <?php $categories = getBoatCategories();
+                                    for ($iCat = 0; $iCat < count($categories); $iCat++): ?>
+                                        <option id="<?= $categories[$iCat]['id']; ?>"
+                                                value="<?= $categories[$iCat]['id']; ?>"
+                                                class="categoryBackground"
+                                                disabled>
+                                            <?= $categories[$iCat]['name']; ?>
+                                        </option>
+                                        <?php $standardItems = getStandardItems();
+                                        for ($iSI = 0; $iSI < count($standardItems); $iSI++): ?>
+                                            <?php if ($categories[$iCat]['id'] == $standardItems[$iSI]['category_id']) : ?>
+                                                <option id="<?= $standardItems[$iSI]['id']; ?>"
+                                                        value="<?= $standardItems[$iSI]['id']; ?>"
+                                                >
+                                                    <?= $standardItems[$iSI]['name']; ?>
+                                                </option>
+                                            <?php endif; ?>
+                                        <?php endfor; ?>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
                             <label>Description: </label>
                             <input type="text"
                                    id="description<?php echo $i > 0 ? $i : ""; ?>"
                                    name="description[]"
                                    class="form-control input">
 
-                            <div id="dimensionValues<?php echo $i > 0 ? $i : ""; ?>"
-                                <?php
-                                if (isset($_SESSION['standard-item'])) {
-//                                echo $_SESSION['standard-item'][$i];
-                                    $nullDimensions = getStandardItemsNullDimensions();
-                                    $contains = false;
-                                    foreach ($nullDimensions as $dim) {
-                                        if ($_SESSION['standard-item'][$i] == $dim['id']) $contains = true;
-                                    }
-                                    echo $contains
-                                        ? ""
-                                        : "style='display:none'";
-                                }
-                                if ((!isset($_POST['standard-item'])) && (!isset($_SESSION['standard-item']))) {
-                                    echo "style='display:none'";
-                                }
-                                ?>
-                            >
+                            <div id="dimensionValues<?php echo $i > 0 ? $i : ""; ?>">
                                 <label>from</label>
                                 <input type="number" min="0" step="1"
                                        name="value-from[]"
@@ -174,6 +153,7 @@ if (isset($_POST['search'])) {
                 <br>
                 <button class="addCategory btn btn-search col-md-12">Add category</button>
                 <br><br>
+
 
                 <!--boat price-->
                 <label>Price</label><br>
