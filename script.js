@@ -33,7 +33,7 @@ $("#getContactInfo").on('submit', function (e) {
     $phone = $("#phone").val();
     $options = $('input[name=options]:checked', '#getContactInfo').val();
     $notes = $("#notes").val();
-    console.log($name + " " + typeof $email + " " + typeof $phone + " " + typeof $options + " " + $notes + " " + brokers_id + " " + boat_id);
+    // console.log($name + " " + typeof $email + " " + typeof $phone + " " + typeof $options + " " + $notes + " " + brokers_id + " " + boat_id);
 
     $.ajax({
         url: "boat.php?id=" + boat_id,
@@ -49,7 +49,12 @@ $("#getContactInfo").on('submit', function (e) {
             "notes": $notes
         },
         success: function (data, status) {
-            console.log("Success");
+            // console.log("Success");
+            $("#submitInfo").after("<div class='a  alert-success'>  Your data has been successfully sent. </div>");
+            $("#name").val('');
+            $("#email").val('');
+            $("#phone").val('');
+            $("#notes").val('');
         },
         error: function (xhr, desc, err) {
             console.log("error");

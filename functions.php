@@ -416,6 +416,36 @@ function getBoatStandardItemsCategories()
     return $arr;
 }
 
+// Get Boat broker informations
+function getBrokerInfo($brokerID)
+{
+    $conn = connection();
+
+    $query = $conn->prepare("SELECT `brokers`.`contact` AS broker, `brokers`.`p_country` AS broker_country, `brokers`.`phone` AS broker_phone  
+      FROM brokers 
+      WHERE brokers.`id`=" . $brokerID);
+    $query->execute();
+    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+    $conn = null;
+
+    return $result;
+}
+
+// Get Boat office informations
+function getOfficeInfo($officeID)
+{
+    $conn = connection();
+
+    $query = $conn->prepare("SELECT offices.`office_name` AS office, offices.`phone` AS office_phone, `offices`.`p_country` AS office_country 
+        FROM offices 
+        WHERE offices.`id`=" . $officeID);
+    $query->execute();
+    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+    $conn = null;
+
+    return $result;
+}
+
 // Get boat main details
 function getBoatMainDetails($boatInfoObject)
 {

@@ -25,8 +25,10 @@ if (isset($_GET['id'])) {
             $boatLongitude = getBoatLongitude($boatInfoObject);
             $boatAddress = getBoatAddress($boatInfoObject);
             $boatPrimaryPhoto = getBoatPrimaryPhoto($boatInfoObject);
+            $boatBrokerInfo = getBrokerInfo($boatMainDetails['brokers_id']);
+            $boatOfficeInfo = getOfficeInfo($boatMainDetails['offices_id']);
 
-
+//            echo "brokerID " . $boatMainDetails['brokers_id'] . " Office Id " . $boatMainDetails['offices_id'];
 //            echo '<pre>';
 //            print_r($boatStandarsItems);
 //            print_r($boatStandarsItemsCategory);
@@ -147,13 +149,23 @@ if (isset($_GET['id'])) {
         <p style="float:none; !important;">We'll get back to you with more information and take you thorough the options
             for
             viewing and buying this boat.</p>
-        <p style="float:none; !important;">Alternatively, don't forget that you can call us on +44 800 037 1329 anytime
-            for a
-            chat</p>
+
     </div>
 
     <div class="col-md-8 col-md-offset-2" style="float:none !important">
-
+        <?php if (!empty($boatBrokerInfo[0])) : extract($boatBrokerInfo[0]) ?>
+            <hr>
+            <p style="float:none; !important;">Broker: <?= $broker; ?></p>
+            <p style="float:none; !important;">Broker country: <?= $broker_country; ?></p>
+            <p style="float:none; !important;">Broker Phone: <?= $broker_phone; ?></p>
+        <?php endif; ?>
+        <?php if (!empty($boatOfficeInfo[0])) : extract($boatOfficeInfo[0]) ?>
+            <hr>
+            <p style="float:none; !important;">Office: <?= $office; ?></p>
+            <p style="float:none; !important;">Office country: <?= $office_country; ?></p>
+            <p style="float:none; !important;">Office Phone: <?= $office_phone; ?></p>
+        <?php endif; ?>
+        <hr>
         <form id='getContactInfo' action='' method="post">
             <div class='form-group col-md-6 col-md-offset-3'>
                 <label for='name'>Your name:</label>
@@ -178,17 +190,17 @@ if (isset($_GET['id'])) {
             </div>
             <div class="col-md-6 col-md-offset-3">
                 <label for='notes'>Notes:</label>
-                <textarea class='form-control' id='notes' name="notes" rows='5'></textarea>
+                <textarea class='form-control' id='notes' name="notes" rows='5' required></textarea>
             </div>
 
             <div class='sArea text-center col-md-8 col-md-offset-2' style="margin-top: 20px;">
                 <button type='submit' id='submitInfo' name="submitInfo" class="btn">Send enquiry</button>
             </div>
         </form>
+
     </div>
 
 </div>
-
 
 <!--    Map div   -->
 <div class="col-md-8 col-md-offset-2">
@@ -208,7 +220,7 @@ if (isset($_GET['id'])) {
 
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBusPgYdcaTfv_8qyYEgqOmKzy-SgVZX2M&callback=initMap"
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0s7OlAnTSc4JgF1bQXOrwunjgFYXrZqI&callback=initMap"
         async defer></script>
 <script src="https://code.jquery.com/jquery-3.1.1.js"
         integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
