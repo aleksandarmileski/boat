@@ -251,3 +251,7 @@ span {
 .categoryBackground {
     background-color: #94cdba;
 }
+
+.standardItemIndention{
+    margin-left: 10px;
+}

@@ -17,7 +17,6 @@ if (isset($_POST['search'])) {
     $_SESSION['value-from'] = $_POST['value-from'];
     $_SESSION['value-to'] = $_POST['value-to'];
 
-    $_SESSION['category'] = $_POST['category'];
     $_SESSION['standard-item'] = $_POST['standard-item'];
 
     $_SESSION['description'] = $_POST['description'];
@@ -79,8 +78,8 @@ if (isset($_POST['search'])) {
                     <hr>
                     <?php
 
-                    isset($_SESSION['category'])
-                        ? $cycleNo = count($_SESSION['category'])
+                    isset($_SESSION['standard-item'])
+                        ? $cycleNo = count($_SESSION['standard-item'])
                         : $cycleNo = 1;
 
                     for ($i = 0; $i < $cycleNo; $i++):
@@ -103,16 +102,32 @@ if (isset($_POST['search'])) {
                                                 disabled>
                                             <?= $categories[$iCat]['name']; ?>
                                         </option>
-                                        <?php $standardItems = getStandardItems();
+                                        <?php $standardItems = getBoatStandardItem($categories[$iCat]['id']);
                                         for ($iSI = 0; $iSI < count($standardItems); $iSI++): ?>
-                                            <?php if ($categories[$iCat]['id'] == $standardItems[$iSI]['category_id']) : ?>
-                                                <option id="<?= $standardItems[$iSI]['id']; ?>"
-                                                        value="<?= $standardItems[$iSI]['id']; ?>"
-                                                >
-                                                    <?= $standardItems[$iSI]['name']; ?>
-                                                </option>
-                                            <?php endif; ?>
+                                            <option id="<?= $standardItems[$iSI]['id']; ?>"
+                                                    value="<?= $standardItems[$iSI]['id']; ?>"
+                                                    class="standardItems"
+                                                <?php if (isset($_SESSION['standard-item']) && ($standardItems[$iSI]['id'] == $_SESSION['standard-item'][$i])) {
+                                                    echo 'selected';
+                                                } ?>>
+                                                <?= $standardItems[$iSI]['name']; ?>
+                                            </option>
                                         <?php endfor; ?>
+                                    <?php endfor; ?>
+                                    <option value="all" name="all" id="0"
+                                            class="categoryBackground"
+                                            disabled>No category
+                                    </option>
+                                    <?php $standardItemsNoCategory = getBoatStandardItem('all');
+                                    for ($iSInc = 0; $iSInc < count($standardItemsNoCategory); $iSInc++): ?>
+                                        <option id="<?= $standardItemsNoCategory[$iSInc]['id']; ?>"
+                                                value="<?= $standardItemsNoCategory[$iSInc]['id']; ?>"
+                                                class="standardItems"
+                                            <?php if (isset($_SESSION['standard-item']) && ($standardItemsNoCategory[$iSInc]['id'] == $_SESSION['standard-item'][$i])) {
+                                                echo 'selected';
+                                            } ?>>
+                                            <?= $standardItemsNoCategory[$iSInc]['name']; ?>
+                                        </option>
                                     <?php endfor; ?>
                                 </select>
                             </div>
@@ -120,9 +135,29 @@ if (isset($_POST['search'])) {
                             <input type="text"
                                    id="description<?php echo $i > 0 ? $i : ""; ?>"
                                    name="description[]"
-                                   class="form-control input">
+                                   class="form-control input"
+                                   value="<?php if (isset($_SESSION['description'][$i])) {
+                                       echo $_SESSION['description'][$i];
+                                   } ?>">
 
-                            <div id="dimensionValues<?php echo $i > 0 ? $i : ""; ?>">
+                            <div id="dimensionValues<?php echo $i > 0 ? $i : ""; ?>"
+                                <?php
+                                if (isset($_SESSION['standard-item'])) {
+//                                echo $_SESSION['standard-item'][$i];
+                                    $nullDimensions = getStandardItemsNullDimensions();
+                                    $contains = false;
+                                    foreach ($nullDimensions as $dim) {
+                                        if ($_SESSION['standard-item'][$i] == $dim['id']) $contains = true;
+                                    }
+                                    echo $contains
+                                        ? ""
+                                        : "style='display:none'";
+                                }
+                                //      if ((!isset($_POST['standard-item'])) && (!isset($_SESSION['standard-item']))) {
+                                //          echo "style='display:none'";
+                                //      }
+                                ?>
+                            >
                                 <label>from</label>
                                 <input type="number" min="0" step="1"
                                        name="value-from[]"
@@ -282,11 +317,8 @@ if (isset($_POST['search'])) {
 </div>
 
 <script>
-    var categories = <?=json_encode(getBoatCategories()); ?>;
-    var standardItems = <?=json_encode(getStandardItems()); ?>;
     var standardItemsNullDimension = <?=json_encode(getStandardItemsNullDimensions()); ?>;
     var boatsNo = <?=json_encode(ceil(count($boats) / 10)); ?>;
-
 </script>
 <script src="https://code.jquery.com/jquery-3.1.1.js"
         integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="

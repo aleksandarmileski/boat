@@ -11,7 +11,7 @@ $(function () {
         visiblePages: 10,
         startPage: currentPage,
         onPageClick: function (event, page) {
-            console.info(page);
+            // console.info(page);
             $('.boats').each(function (i, obj) {
                 if (($(this).attr('id') < (page * 10)) && ($(this).attr('id') >= ((page - 1) * 10)  )) {
                     $(this).show();
@@ -28,7 +28,7 @@ $(function () {
                 } else {
                     sessionStorage.currentPage = 1;
                 }
-                console.log(sessionStorage.currentPage);
+                // console.log(sessionStorage.currentPage);
             }
         }
     });

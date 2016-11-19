@@ -26,7 +26,7 @@ function getRandomBoats()
             INNER JOIN builders ON boats.builders_id=builders.id
             INNER JOIN boat_locations ON boats.id=boat_locations.boat_id
         WHERE prices.current = 1 AND photos.primaryPhoto = 1
-        LIMIT 1000";
+        LIMIT 100";
 
 //    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
 //        $id = $row['id'];
@@ -96,7 +96,7 @@ function findBoats()
         }
     }
 
-    $firstCategory = isset($_POST['category']) ? $_POST['category'][0] : $_SESSION['category'][0];
+//    $firstCategory = isset($_POST['category']) ? $_POST['category'][0] : $_SESSION['category'][0];
     $firstStandardItem = isset($_POST['standard-item']) ? $_POST['standard-item'][0] : $_SESSION['standard-item'][0];
     $firstDescription = isset($_POST['description']) ? $_POST['description'][0] : $_SESSION['description'][0];
     $brStandardItems = isset($_POST['standard-item']) ? count($_POST['standard-item']) : count($_SESSION['standard-item']);
@@ -105,8 +105,7 @@ function findBoats()
         if ($brStandardItems > 0) {
             $nullDimensions = getStandardItemsNullDimensions();
 
-            if (($firstCategory != 'all')
-                || ($firstStandardItem != 1)
+            if (($firstStandardItem != 1)
                 || (trim($firstDescription) != '')
                 || ($brStandardItems > 1)
             ) {
@@ -115,7 +114,7 @@ function findBoats()
                 $queryWhereStr = $queryWhereStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id`";
                 $queryWhereStr = $queryWhereStr . " FROM ( ";
                 for ($i = 0; $i < $brStandardItems; $i++) {
-                    $categoryID = isset($_POST['category']) ? $_POST['category'][$i] : $_SESSION['category'][$i];
+//                    $categoryID = isset($_POST['category']) ? $_POST['category'][$i] : $_SESSION['category'][$i];
 //            echo "Category id: |" . $categoryID . "|     ";
                     $standardItemID = isset($_POST['standard-item']) ? $_POST['standard-item'][$i] : $_SESSION['standard-item'][$i];;
 //            echo "Standard item id: |" . $standardItemID . "|     ";
@@ -218,8 +217,7 @@ function findBoats()
         }
     }
 
-    if (($firstCategory != 'all')
-        || ($firstStandardItem != 1)
+    if (($firstStandardItem != 1)
         || (trim($firstDescription) != '')
         || ($brStandardItems > 1)
         || (trim($boatKeyword != ''))
@@ -230,12 +228,12 @@ function findBoats()
         $queryFromStr = $queryFromStr . " LEFT JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id ";
     }
 
-    $queryWhereStr = $queryWhereStr . " GROUP BY boats.id LIMIT 1000";
+    $queryWhereStr = $queryWhereStr . " GROUP BY boats.id LIMIT 100";
 
     $queryStr = $querySelectStr . $queryFromStr . $queryWhereStr;
 
-//    echo "------ Query -----";
-//    echo $queryStr;
+    echo "------ Query -----";
+    echo $queryStr;
 
 //    $result = $conn->query($queryStr);
 //    $brBoats = 0;
@@ -362,11 +360,13 @@ function getStandardItems()
     return $result;
 }
 
-// Get boat standard item
+// Get boat standard item by category
 function getBoatStandardItem($categoryId)
 {
     $conn = connection();
-    $queryStr = "SELECT id,name FROM standard_items WHERE category_id=" . $categoryId;
+    $categoryId == 'all'
+        ? $queryStr = "SELECT id,name,dimensions FROM standard_items WHERE category_id IS NULL"
+        : $queryStr = "SELECT id,name,dimensions FROM standard_items WHERE category_id=" . $categoryId;
     $query = $conn->prepare($queryStr);
     $query->execute();
     $result = $query->fetchAll(PDO::FETCH_ASSOC);
