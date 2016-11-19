@@ -220,7 +220,7 @@ if (isset($_GET['id'])) {
 
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0s7OlAnTSc4JgF1bQXOrwunjgFYXrZqI&callback=initMap"
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqBvP2LD4TmcItxE018x1wUVBfNW4OyHk&callback=initMap"
         async defer></script>
 <script src="https://code.jquery.com/jquery-3.1.1.js"
         integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="

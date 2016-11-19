@@ -60,7 +60,7 @@ div.clear {
 hr {
     float: left;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 5px;
     border-color: #94cdba;
 }
 
@@ -222,7 +222,7 @@ hr {
     border: 0;
     height: 1px;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-    margin-top: 25px;
+    margin-top: 15px;
     padding-top: 2px;
 }
 
@@ -252,6 +252,22 @@ span {
     background-color: #94cdba;
 }
 
-.standardItemIndention{
+.standardItemIndention {
     margin-left: 10px;
+}
+
+.mainStandardItem {
+    background-color: #94cdba;
+    border: 3px solid #004230;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.inlineNumberInput {
+    display: inline-block;
+    width: 45%;
+}
+
+#defaultStandardItems label {
+    width: 100%;
 }

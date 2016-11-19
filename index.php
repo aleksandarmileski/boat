@@ -17,6 +17,7 @@ if (isset($_POST['search'])) {
     $_SESSION['value-from'] = $_POST['value-from'];
     $_SESSION['value-to'] = $_POST['value-to'];
 
+    $_SESSION['category'] = $_POST['category'];
     $_SESSION['standard-item'] = $_POST['standard-item'];
 
     $_SESSION['description'] = $_POST['description'];
@@ -49,7 +50,7 @@ if (isset($_POST['search'])) {
 <div class="container">
 
     <div class="pull-left col-md-6">
-        <div class="pull-left col-md-6">
+        <div class="pull-left col-md-10">
             <form method="post" class="form-horizontal">
 
                 <!--boat types-->
@@ -75,11 +76,54 @@ if (isset($_POST['search'])) {
                 <!--boat standard-item-value-->
                 <div class="standardItems">
                     <label for="standard-item-value-from">Boat standard items:</label>
-                    <hr>
+
+                    <div id="defaultStandardItems">
+                        <input type="number" min="0" placeholder="Min Length" id="minLength" name="minLength"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="10" placeholder="Max Length" id="maxLength" name="maxLength"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="0" placeholder="Min Head Room" id="minHeadRoom" name="minHeadRoom"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="10" placeholder="Max Head Room" id="maxHeadRoom" name="maxHeadRoom"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="0" placeholder="Min Voltage" id="minVoltage" name="minVoltage"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="10" placeholder="Max Voltage" id="maxVoltage" name="maxVoltage"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="0" placeholder="Min Motor" id="minMotor" name="minMotor"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="10" placeholder="Max Motor" id="maxMotor" name="maxMotor"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="0" placeholder="Min kW" id="minkW" name="minkW"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="10" placeholder="Max kW" id="maxkW" name="maxkW"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="0" placeholder="Min HP" id="minHP" name="minHP"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="10" placeholder="Max HP" id="maxHP" name="maxHP"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="0" placeholder="Min Stabilizers" id="minStabilizers" name="minStabilizers"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="10" placeholder="Max Stabilizers" id="maxStabilizers" name="maxStabilizers"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="0" placeholder="Min Barometer" id="minBarometer" name="minBarometer"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="10" placeholder="Max Barometer" id="maxBarometer" name="maxBarometer"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="0" placeholder="Min Sleeping Places" id="minSleepingPlaces" name="minSleepingPlaces"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="10" placeholder="Max Sleeping Places" id="maxSleepingPlaces" name="maxSleepingPlaces"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="0" placeholder="Min Cabin" id="minCabin" name="minCabin"
+                               class="inlineNumberInput form-control">
+                        <input type="number" min="10" placeholder="Max Cabin" id="maxCabin" name="maxCabin"
+                               class="inlineNumberInput form-control">
+                    </div>
+
                     <?php
 
-                    isset($_SESSION['standard-item'])
-                        ? $cycleNo = count($_SESSION['standard-item'])
+                    isset($_SESSION['category'])
+                        ? $cycleNo = count($_SESSION['category'])
                         : $cycleNo = 1;
 
                     for ($i = 0; $i < $cycleNo; $i++):
@@ -87,58 +131,43 @@ if (isset($_POST['search'])) {
 
                         ?>
                         <div class="mainStandardItem" id="mainStandardItem<?php echo $i > 0 ? $i : ""; ?>">
-                            <!-- only standard items-->
-                            <div>
-                                <label>Boat standard item:</label><br>
-                                <select
-                                    name="standard-item[]"
-                                    id="standard-item<?php echo $i > 0 ? $i : ""; ?>"
-                                    class="form-control input">
-                                    <?php $categories = getBoatCategories();
-                                    for ($iCat = 0; $iCat < count($categories); $iCat++): ?>
-                                        <option id="<?= $categories[$iCat]['id']; ?>"
-                                                value="<?= $categories[$iCat]['id']; ?>"
-                                                class="categoryBackground"
-                                                disabled>
-                                            <?= $categories[$iCat]['name']; ?>
-                                        </option>
-                                        <?php $standardItems = getBoatStandardItem($categories[$iCat]['id']);
-                                        for ($iSI = 0; $iSI < count($standardItems); $iSI++): ?>
-                                            <option id="<?= $standardItems[$iSI]['id']; ?>"
-                                                    value="<?= $standardItems[$iSI]['id']; ?>"
-                                                    class="standardItems"
-                                                <?php if (isset($_SESSION['standard-item']) && ($standardItems[$iSI]['id'] == $_SESSION['standard-item'][$i])) {
-                                                    echo 'selected';
-                                                } ?>>
-                                                <?= $standardItems[$iSI]['name']; ?>
-                                            </option>
-                                        <?php endfor; ?>
-                                    <?php endfor; ?>
-                                    <option value="all" name="all" id="0"
-                                            class="categoryBackground"
-                                            disabled>No category
+                            <label>Boat category:</label><br>
+                            <select
+                                name="category[]"
+                                id="category<?php echo $i > 0 ? $i : ""; ?>"
+                                class="form-control input">
+                                <option id='all'
+                                        value='all'>
+                                    All categories
+                                </option>
+                                <?php $categories = getBoatCategories();
+                                for ($iCat = 0; $iCat < count($categories); $iCat++): ?>
+                                    <option id="<?= $categories[$iCat]['id']; ?>"
+                                            value="<?= $categories[$iCat]['id']; ?>"
+                                        <?php if (isset($_SESSION['category']) && ($_SESSION['category'][$i] == $categories[$iCat]['id'])) echo "selected"; ?>>
+                                        <?= $categories[$iCat]['name']; ?>
                                     </option>
-                                    <?php $standardItemsNoCategory = getBoatStandardItem('all');
-                                    for ($iSInc = 0; $iSInc < count($standardItemsNoCategory); $iSInc++): ?>
-                                        <option id="<?= $standardItemsNoCategory[$iSInc]['id']; ?>"
-                                                value="<?= $standardItemsNoCategory[$iSInc]['id']; ?>"
-                                                class="standardItems"
-                                            <?php if (isset($_SESSION['standard-item']) && ($standardItemsNoCategory[$iSInc]['id'] == $_SESSION['standard-item'][$i])) {
-                                                echo 'selected';
-                                            } ?>>
-                                            <?= $standardItemsNoCategory[$iSInc]['name']; ?>
-                                        </option>
-                                    <?php endfor; ?>
-                                </select>
-                            </div>
+                                <?php endfor; ?>
+                            </select>
+                            <label>Boat standard item:</label><br>
+                            <select
+                                name="standard-item[]"
+                                id="standard-item<?php echo $i > 0 ? $i : ""; ?>"
+                                class="form-control input">
+                                <?php $standardItems = getStandardItems();
+                                for ($iSI = 0; $iSI < count($standardItems); $iSI++): ?>
+                                    <option id="<?= $standardItems[$iSI]['id']; ?>"
+                                            value="<?= $standardItems[$iSI]['id']; ?>"
+                                        <?php if (isset($_SESSION['standard-item']) && ($_SESSION['standard-item'][$i] == $standardItems[$iSI]['id'])) echo "selected"; ?>>
+                                        <?= $standardItems[$iSI]['name']; ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
                             <label>Description: </label>
                             <input type="text"
                                    id="description<?php echo $i > 0 ? $i : ""; ?>"
                                    name="description[]"
-                                   class="form-control input"
-                                   value="<?php if (isset($_SESSION['description'][$i])) {
-                                       echo $_SESSION['description'][$i];
-                                   } ?>">
+                                   class="form-control input">
 
                             <div id="dimensionValues<?php echo $i > 0 ? $i : ""; ?>"
                                 <?php
@@ -153,9 +182,9 @@ if (isset($_POST['search'])) {
                                         ? ""
                                         : "style='display:none'";
                                 }
-                                //      if ((!isset($_POST['standard-item'])) && (!isset($_SESSION['standard-item']))) {
-                                //          echo "style='display:none'";
-                                //      }
+                                if ((!isset($_POST['standard-item'])) && (!isset($_SESSION['standard-item']))) {
+                                    echo "style='display:none'";
+                                }
                                 ?>
                             >
                                 <label>from</label>
@@ -188,7 +217,6 @@ if (isset($_POST['search'])) {
                 <br>
                 <button class="addCategory btn btn-search col-md-12">Add category</button>
                 <br><br>
-
 
                 <!--boat price-->
                 <label>Price</label><br>
@@ -317,8 +345,11 @@ if (isset($_POST['search'])) {
 </div>
 
 <script>
+    var categories = <?=json_encode(getBoatCategories()); ?>;
+    var standardItems = <?=json_encode(getStandardItems()); ?>;
     var standardItemsNullDimension = <?=json_encode(getStandardItemsNullDimensions()); ?>;
     var boatsNo = <?=json_encode(ceil(count($boats) / 10)); ?>;
+
 </script>
 <script src="https://code.jquery.com/jquery-3.1.1.js"
         integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="

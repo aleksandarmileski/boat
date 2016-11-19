@@ -63,101 +63,68 @@ $("#getContactInfo").on('submit', function (e) {
     e.preventDefault();
 });
 
-// $('#dimensionValues').hide();
-
-// // Auto fill dropdowns
-// $('#category').append("<option id='all' value='all'>All categories</option>");
-// categories.forEach(function (category) {
-//     // console.log(category['name']);
-//     $('#category').append("<option id=" + category['id'] + " value=" + category['id'] + " >" + category['name'] + "</option>");
-// });
-// standardItems.forEach(function (standardItem) {
-//     $('#standard-item').append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + " >" + standardItem['name'] + "</option>");
-// });
-
 // Print Div id
 $(document).on('click', 'div[id^="mainStandardItem"]', function (e) {
     // console.log($(this).attr('id'));
 });
 
 // Select category an fill with Standard items options
-// $(document).on('click', 'select[id^="category"]', function (e) {
-//     $categoryID = $(this).attr('id');
-//     $selectedCategoryID = $(this).children(":selected").attr("id");
-//
-//     // console.log('Select ID: ' + $categoryID);
-//     // console.log('Selected category id: ' + $selectedCategoryID);
-//
-//     if ($categoryID == 'category') {
-//         $('#standard-item').empty();
-//         if ($selectedCategoryID == 'all') {
-//             standardItems.forEach(function (standardItem) {
-//                 $('#standard-item').append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
-//             });
-//         } else {
-//             standardItems.forEach(function (standardItem) {
-//                 if (standardItem['category_id'] == $selectedCategoryID) {
-//                     $('#standard-item').append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
-//                 }
-//             });
-//         }
-//     } else {
-//         $categoryIdIndex = parseInt($categoryID.match(/\d+/g), 10);
-//         // console.log($categoryIdIndex);
-//         $('#standard-item' + $categoryIdIndex).empty();
-//         if ($selectedCategoryID == 'all') {
-//             standardItems.forEach(function (standardItem) {
-//                 $('#standard-item' + $categoryIdIndex).append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
-//             });
-//         } else {
-//             standardItems.forEach(function (standardItem) {
-//                 if (standardItem['category_id'] == $selectedCategoryID) {
-//                     $('#standard-item' + $categoryIdIndex).append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
-//                 }
-//             });
-//         }
-//     }
-//
-//     $parentID = $(this).parent().attr('id');
-//     // console.log('parent id: ' + $parentID);
-//     $parentIdIndex = parseInt($parentID.match(/\d+/g), 10);
-//     // console.log('parent id: ' + $parentIdIndex);
-//
-//     toggleStandardItemsValues($parentIdIndex);
-//
-// });
+$(document).on('click', 'select[id^="category"]', function (e) {
+    $categoryID = $(this).attr('id');
+    $selectedCategoryID = $(this).children(":selected").attr("id");
 
-$(document).on('click', 'select[id^="standard-item"]', function (e) {
-    $selectedStandardItemIndex = $(this).attr("id");
-    $selectedStandardItemID = $(this).find(":selected").attr("id");
-    console.log($selectedStandardItemID);
+    // console.log('Select ID: ' + $categoryID);
+    // console.log('Selected category id: ' + $selectedCategoryID);
 
-    $imaValueInterval = false;
-    standardItemsNullDimension.forEach(function (i) {
-        if (i['id'] == $selectedStandardItemID) {
-            $imaValueInterval = true;
+    if ($categoryID == 'category') {
+        $('#standard-item').empty();
+        if ($selectedCategoryID == 'all') {
+            standardItems.forEach(function (standardItem) {
+                $('#standard-item').append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+            });
+        } else {
+            standardItems.forEach(function (standardItem) {
+                if (standardItem['category_id'] == $selectedCategoryID) {
+                    $('#standard-item').append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+                }
+            });
         }
-    })
-
-    $idIndex = parseInt($selectedStandardItemIndex.match(/\d+/g), 10);
-    if (isNaN($idIndex)) {
-        console.log("prv");
-        $imaValueInterval
-            ? $('#dimensionValues').show()
-            : $('#dimensionValues').hide();
+    } else {
+        $categoryIdIndex = parseInt($categoryID.match(/\d+/g), 10);
+        // console.log($categoryIdIndex);
+        $('#standard-item' + $categoryIdIndex).empty();
+        if ($selectedCategoryID == 'all') {
+            standardItems.forEach(function (standardItem) {
+                $('#standard-item' + $categoryIdIndex).append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+            });
+        } else {
+            standardItems.forEach(function (standardItem) {
+                if (standardItem['category_id'] == $selectedCategoryID) {
+                    $('#standard-item' + $categoryIdIndex).append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + ">" + standardItem['name'] + "</option>");
+                }
+            });
+        }
     }
-    else {
-        $imaValueInterval
-            ? $('#dimensionValues' + $idIndex).show()
-            : $('#dimensionValues' + $idIndex).hide();
-    }
 
-
-    // $parentID = $(this).parent().attr('id');
+    $parentID = $(this).parent().attr('id');
     // console.log('parent id: ' + $parentID);
+    $parentIdIndex = parseInt($parentID.match(/\d+/g), 10);
     // console.log('parent id: ' + $parentIdIndex);
 
-    // toggleStandardItemsValues($parentIdIndex);
+    toggleStandardItemsValues($parentIdIndex);
+
+});
+
+$(document).on('click', 'select[id^="standard-item"]', function (e) {
+    $selectedCategoryID = $(this).children(":selected").attr("id");
+    // console.log($selectedCategoryID);
+
+    $parentID = $(this).parent().attr('id');
+    // console.log('parent id: ' + $parentID);
+    $parentIdIndex = parseInt($parentID.match(/\d+/g), 10);
+    // console.log('parent id: ' + $parentIdIndex);
+
+    toggleStandardItemsValues($parentIdIndex);
 
 });
 
@@ -210,6 +177,9 @@ $(".addCategory").on('click', function (e) {
         if (~this.id.indexOf("mainStandardItem")) {
             this.id = "mainStandardItem" + $cloneCounter;
         }
+        if (~this.id.indexOf("category")) {
+            this.id = "category" + $cloneCounter;
+        }
         if (~this.id.indexOf("standard-item")) {
             this.id = "standard-item" + $cloneCounter;
         }
@@ -227,16 +197,22 @@ $(".addCategory").on('click', function (e) {
         }
     });
     if (clone.find('button').length == 0) {
-        $("<button class='removeCategory btn btn-danger'>Remove Standard Item</button>").appendTo(clone);
+        $("<button class='removeCategory btn btn-danger'>Remove category</button>").appendTo(clone);
     }
     // console.log(clone);
     $(clone).insertAfter('div[id^="mainStandardItem"]:last');
-    // $('#standard-item' + $cloneCounter).empty();
+    $('#category' + $cloneCounter).empty();
+    $('#standard-item' + $cloneCounter).empty();
     // Auto fill dropdowns
-    // standardItems.forEach(function (standardItem) {
-    //     $('#standard-item' + $cloneCounter).append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + " >" + standardItem['name'] + "</option>");
-    // });
-    $('#dimensionValues' + $cloneCounter).show();
+    $('#category' + $cloneCounter).append("<option id='all' value='all'>All categories</option>");
+    categories.forEach(function (category) {
+        // console.log(category['name']);
+        $('#category' + $cloneCounter).append("<option id=" + category['id'] + " value=" + category['id'] + " >" + category['name'] + "</option>");
+    });
+    standardItems.forEach(function (standardItem) {
+        $('#standard-item' + $cloneCounter).append("<option id=" + standardItem['id'] + " value=" + standardItem['id'] + " >" + standardItem['name'] + "</option>");
+    });
+    $('#dimensionValues' + $cloneCounter).hide();
     $cloneCounter++;
 });
 
@@ -249,3 +225,4 @@ $(document).on('click', '.removeCategory', function (e) {
 $(document).on('click', '#search', function (e) {
     sessionStorage.clear();
 });
+
