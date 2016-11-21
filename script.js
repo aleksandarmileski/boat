@@ -143,7 +143,7 @@ function toggleStandardItemsValues($parentIdIndex) {
         }
     })
     if ($imaValueInterval) {
-        console.log("ima interval na vrednosti");
+        // console.log("ima interval na vrednosti");
         if ($isFirst) {
             $('#dimensionValues').show();
         } else {
@@ -226,3 +226,28 @@ $(document).on('click', '#search', function (e) {
     sessionStorage.clear();
 });
 
+$(document).on('keyup mouseup', '.inlineNumberInput', function () {
+    // console.log($(this).attr('id'));
+    $currentValue=$(this).val();
+    if ($currentValue!=''){
+        $prefix = $(this).attr('id').substr(0, 3);
+        // console.log($prefix);
+        $siName = $(this).attr('id').substr(3);
+        // console.log($siName);
+
+        if($prefix=='min'){
+            $('#max'+$siName).attr({"min" : $currentValue});
+        }
+        if($prefix=='max'){
+            $('#min'+$siName).attr({"max" : $currentValue});
+        }
+        if($prefix=='pri'){
+            if($(this).attr('id')=="price-from"){
+                $('#price-to').attr({"min" : $currentValue});
+            }
+            if($(this).attr('id')=="price-to"){
+                $('#price-from').attr({"max" : $currentValue});
+            }
+        }
+    }
+});

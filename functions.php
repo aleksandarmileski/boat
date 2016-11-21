@@ -10,43 +10,23 @@ function getRandomBoats()
     $conn = connection();
 
     $queryStr = "
-        SELECT boats.id as id, 
-            boats.title as title, 
-            types.type as type,
-            photos.location_filename AS photo_url,
-            prices.value as price,
-            builders.name AS builder,
-            boats.year as year,
-            boat_locations.country as country
+        SELECT `sequalize`.`boats`.`id` AS id, 
+            `sequalize`.`boats`.`title` AS title, 
+            `sequalize`.`types`.`type` AS type,
+            `sequalize`.`photos`.`location_filename` AS photo_url,
+            `sequalize`.`prices`.`value` AS price,
+            `sequalize`.`builders`.`name` AS builder,
+            `sequalize`.`boats`.`year` AS year,
+            `sequalize`.`boat_locations`.`country` AS country
         FROM boats
-            LEFT JOIN boat_types ON boats.id=boat_types.boat_id
-            LEFT JOIN types ON boat_types.type_id=types.id
-            INNER JOIN photos ON boats.id=photos.boat_id
-            INNER JOIN prices ON boats.id=prices.boat_id
-            INNER JOIN builders ON boats.builders_id=builders.id
-            INNER JOIN boat_locations ON boats.id=boat_locations.boat_id
-        WHERE prices.current = 1 AND photos.primaryPhoto = 1
-        LIMIT 1000";
-
-//    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-//        $id = $row['id'];
-//        $title = $row['title'];
-//        $type = $row['type'];
-//        $photo = $row['photo_url'];
-//        $price = $row['price'];
-//        $builder = $row['builder'];
-//        $country = $row['country'];
-//        $year = $row['year'];
-//
-//        echo "<a href='http://" . $_SERVER['HTTP_HOST'] . "/boat/boat.php?id=" . $id . "'>";
-//        echo "<div class='res grow' id='$id'>";
-//        echo "<img src='http://46.101.221.106/images/" . $photo . "' class='img-responsive img-fix grow col-md-4' >";
-//        echo "<h3 id='title' class='col-md-8'>$title</h3>";
-//        echo "<span class='col-md-6'>Type: {$type}, <br /> Price {$price} &euro;, <br /> Builder: {$builder}, <br /> Currently lying: {$country}</span>";
-//        echo "</div>";
-//        echo "</a>";
-//        echo "<hr />";
-//    }
+            LEFT JOIN `sequalize`.`boat_types` ON `sequalize`.`boats`.`id`=`sequalize`.`boat_types`.`boat_id`
+            LEFT JOIN `sequalize`.`types` ON `sequalize`.`boat_types`.`type_id`=`sequalize`.`types`.`id`
+            INNER JOIN `sequalize`.`photos` ON `sequalize`.`boats`.`id`=`sequalize`.`photos`.`boat_id`
+            INNER JOIN `sequalize`.`prices` ON `sequalize`.`boats`.`id`=`sequalize`.`prices`.`boat_id`
+            INNER JOIN `sequalize`.`builders` ON `sequalize`.`boats`.`builders_id`=`sequalize`.`builders`.`id`
+            INNER JOIN `sequalize`.`boat_locations` ON `sequalize`.`boats`.`id`=`sequalize`.`boat_locations`.`boat_id`
+        WHERE `sequalize`.`prices`.`current` = 1 AND `sequalize`.`photos`.`primaryPhoto` = 1
+        LIMIT 100";
 
     $query = $conn->prepare($queryStr);
     $query->execute();
@@ -67,34 +47,229 @@ function findBoats()
     $queryWhereStr = " ";
 
     $querySelectStr = $querySelectStr . "
-        SELECT boats.id as id, 
-            boats.title as title, 
-            types.type as type,
-            photos.location_filename AS photo_url,
-            prices.value as price,
-            builders.name AS builder,
-            boats.year as year,
-            boat_locations.country as country";
+        SELECT `sequalize`.`boats`.`id` AS id, 
+            `sequalize`.`boats`.`title` AS title, 
+            `sequalize`.`types`.`type` AS type,
+            `sequalize`.`photos`.`location_filename` AS photo_url,
+            `sequalize`.`prices`.`value` AS price,
+            `sequalize`.`builders`.`name` AS builder,
+            `sequalize`.`boats`.`year` AS year,
+            `sequalize`.`boat_locations`.`country` AS country";
 
     $queryFromStr = $queryFromStr . " 
         FROM boats        
-            LEFT JOIN boat_types ON boats.id=boat_types.boat_id
-            LEFT JOIN types ON boat_types.type_id=types.id           
-            INNER JOIN photos ON boats.id=photos.boat_id       
-            INNER JOIN prices ON boats.id=prices.boat_id        
-            INNER JOIN builders ON boats.builders_id=builders.id        
-            INNER JOIN boat_locations ON boats.id=boat_locations.boat_id ";
+            LEFT JOIN `sequalize`.`boat_types` ON `sequalize`.`boats`.`id`=`sequalize`.`boat_types`.`boat_id`
+            LEFT JOIN `sequalize`.`types` ON `sequalize`.`boat_types`.`type_id`=`sequalize`.`types`.`id`
+            INNER JOIN `sequalize`.`photos` ON `sequalize`.`boats`.`id`=`sequalize`.`photos`.`boat_id`
+            INNER JOIN `sequalize`.`prices` ON `sequalize`.`boats`.`id`=`sequalize`.`prices`.`boat_id`
+            INNER JOIN `sequalize`.`builders` ON `sequalize`.`boats`.`builders_id`=`sequalize`.`builders`.`id`
+            INNER JOIN `sequalize`.`boat_locations` ON `sequalize`.`boats`.`id`=`sequalize`.`boat_locations`.`boat_id` ";
 
-    $queryWhereStr = $queryWhereStr . " WHERE prices.current=1 AND photos.`primaryPhoto`=1 ";
+    $queryWhereStr = $queryWhereStr . " WHERE `sequalize`.`prices`.`current` = 1 AND `sequalize`.`photos`.`primaryPhoto` = 1 ";
 
     // Filter by TYPE
     if (isset($_POST['boat-type']) || isset($_SESSION['boat-type'])) {
         $boatType = isset($_POST['boat-type']) ? $_POST['boat-type'] : $_SESSION['boat-type'];
         if ($boatType != 'all') {
 //        echo "|" . $_POST['boat-type'] . "|";
-            $queryWhereStr = $queryWhereStr . " AND types.id=" . $boatType . " ";
+            $queryWhereStr = $queryWhereStr . " AND `sequalize`.`types`.`id`=" . $boatType . " ";
         }
     }
+
+
+    $hasShortcode = false;
+    $GLOBALS['hasShortcode'] = false;
+    $GLOBALS['queryShortcode'] = "";
+    $GLOBALS['numShortcode'] = 0;
+    function addShorcodeQueryStr($relationalOperator, $itemId, $itemValue)
+    {
+        if ($GLOBALS['numShortcode'] > 0) $GLOBALS['queryShortcode'] = $GLOBALS['queryShortcode'] . " UNION ALL ";
+        $GLOBALS['queryShortcode'] = $GLOBALS['queryShortcode'] . " SELECT `sequalize`.`boat_standard_items`.`boat_id` FROM `sequalize`.`boat_standard_items` WHERE `sequalize`.`boat_standard_items`.`standard_item_id`=" . $itemId . " ";
+        $GLOBALS['queryShortcode'] = $GLOBALS['queryShortcode'] . " AND `sequalize`.`boat_standard_items`.`value`" . $relationalOperator . " " . $itemValue;
+        $GLOBALS['numShortcode']++;
+        $GLOBALS['hasShortcode'] = true;
+    }
+
+    // Filter by shortcode standard-item
+    // MIN Length siID 68
+    if (isset($_POST['minLength']) || isset($_SESSION['minLength'])) {
+        $boatMinLength = isset($_POST['minLength']) ? $_POST['minLength'] : $_SESSION['minLength'];
+        if ($boatMinLength != '') {
+//        echo "|" . $_POST['minLength'] . "|";
+            addShorcodeQueryStr(">=", 68, $boatMinLength);
+        }
+    }
+
+
+    // MAX Length siID 68
+    if (isset($_POST['maxLength']) || isset($_SESSION['maxLength'])) {
+        $boatMaxLength = isset($_POST['maxLength']) ? $_POST['maxLength'] : $_SESSION['maxLength'];
+        if ($boatMaxLength != '') {
+//        echo "|" . $_POST['maxLength'] . "|";
+            addShorcodeQueryStr("<=", 68, $boatMaxLength);
+        }
+    }
+
+
+    // MIN Head room siID 136
+    if (isset($_POST['minHeadRoom']) || isset($_SESSION['minHeadRoom'])) {
+        $boatMinHeadRoom = isset($_POST['minHeadRoom']) ? $_POST['minHeadRoom'] : $_SESSION['minHeadRoom'];
+        if ($boatMinHeadRoom != '') {
+//        echo "|" . $_POST['minHeadRoom'] . "|";
+            addShorcodeQueryStr(">=", 136, $boatMinHeadRoom);
+        }
+    }
+    // MAX Head room siID 136
+    if (isset($_POST['maxHeadRoom']) || isset($_SESSION['maxHeadRoom'])) {
+        $boatMaxHeadRoom = isset($_POST['maxHeadRoom']) ? $_POST['maxHeadRoom'] : $_SESSION['maxHeadRoom'];
+        if ($boatMaxHeadRoom != '') {
+//        echo "|" . $_POST['maxLength'] . "|";
+            addShorcodeQueryStr("<=", 136, $boatMaxHeadRoom);
+        }
+    }
+
+    // MIN Voltage siID 238
+    if (isset($_POST['minVoltage']) || isset($_SESSION['minVoltage'])) {
+        $boatMinVoltage = isset($_POST['minVoltage']) ? $_POST['minVoltage'] : $_SESSION['minVoltage'];
+        if ($boatMinVoltage != '') {
+//        echo "|" . $_POST['minVoltage'] . "|";
+            addShorcodeQueryStr(">=", 238, $boatMinVoltage);
+        }
+    }
+    // MAX Voltage siID 238
+    if (isset($_POST['maxVoltage']) || isset($_SESSION['maxVoltage'])) {
+        $boatMaxVoltage = isset($_POST['maxVoltage']) ? $_POST['maxVoltage'] : $_SESSION['maxVoltage'];
+        if ($boatMaxVoltage != '') {
+//        echo "|" . $_POST['maxLength'] . "|";
+            addShorcodeQueryStr("<=", 238, $boatMaxVoltage);
+        }
+    }
+
+    // MIN Motor siID 310
+    if (isset($_POST['minMotor']) || isset($_SESSION['minMotor'])) {
+        $boatMinMotor = isset($_POST['minMotor']) ? $_POST['minMotor'] : $_SESSION['minMotor'];
+        if ($boatMinMotor != '') {
+//        echo "|" . $_POST['minMotor'] . "|";
+            addShorcodeQueryStr(">=", 310, $boatMinMotor);
+        }
+    }
+    // MAX Motor siID 310
+    if (isset($_POST['maxMotor']) || isset($_SESSION['maxMotor'])) {
+        $boatMaxMotor = isset($_POST['maxMotor']) ? $_POST['maxMotor'] : $_SESSION['maxMotor'];
+        if ($boatMaxMotor != '') {
+//        echo "|" . $_POST['maxLength'] . "|";
+            addShorcodeQueryStr("<=", 310, $boatMaxMotor);
+        }
+    }
+
+    // MIN Kw siID 355
+    if (isset($_POST['minkW']) || isset($_SESSION['minkW'])) {
+        $boatMinKw = isset($_POST['minkW']) ? $_POST['minkW'] : $_SESSION['minkW'];
+        if ($boatMinKw != '') {
+//        echo "|" . $_POST['minMotor'] . "|";
+            addShorcodeQueryStr(">=", 355, $boatMinKw);
+        }
+    }
+    // MAX Kw siID 355
+    if (isset($_POST['maxkW']) || isset($_SESSION['maxkW'])) {
+        $boatMaxKw = isset($_POST['maxkW']) ? $_POST['maxkW'] : $_SESSION['maxkW'];
+        if ($boatMaxKw != '') {
+//        echo "|" . $_POST['maxLength'] . "|";
+            addShorcodeQueryStr("<=", 355, $boatMaxKw);
+
+        }
+    }
+
+    // MIN POWER HP siID 356
+    if (isset($_POST['minHP']) || isset($_SESSION['minHP'])) {
+        $boatMinHP = isset($_POST['minHP']) ? $_POST['minHP'] : $_SESSION['minHP'];
+        if ($boatMinHP != '') {
+//        echo "|" . $_POST['minMotor'] . "|";
+            addShorcodeQueryStr(">=", 356, $boatMinHP);
+        }
+    }
+    // MAX Kw siID 356
+    if (isset($_POST['maxHP']) || isset($_SESSION['maxHP'])) {
+        $boatMaxHP = isset($_POST['maxHP']) ? $_POST['maxHP'] : $_SESSION['maxHP'];
+        if ($boatMaxHP != '') {
+//        echo "|" . $_POST['maxLength'] . "|";
+            addShorcodeQueryStr("<=", 356, $boatMaxHP);
+        }
+    }
+
+    // MIN Stabilizers siID 347
+    if (isset($_POST['minStabilizers']) || isset($_SESSION['minStabilizers'])) {
+        $boatMinStabilizers = isset($_POST['minStabilizers']) ? $_POST['minStabilizers'] : $_SESSION['minStabilizers'];
+        if ($boatMinStabilizers != '') {
+//        echo "|" . $_POST['minMotor'] . "|";
+            addShorcodeQueryStr(">=", 347, $boatMinStabilizers);
+        }
+    }
+    // MAX Stabilizers siID 347
+    if (isset($_POST['maxStabilizers']) || isset($_SESSION['maxStabilizers'])) {
+        $boatMaxStabilizers = isset($_POST['maxStabilizers']) ? $_POST['maxStabilizers'] : $_SESSION['maxStabilizers'];
+        if ($boatMaxStabilizers != '') {
+//        echo "|" . $_POST['maxLength'] . "|";
+            addShorcodeQueryStr("<=", 347, $boatMaxStabilizers);
+        }
+    }
+
+    // MIN Barometer siID 360
+    if (isset($_POST['minBarometer']) || isset($_SESSION['minBarometer'])) {
+        $boatMinBarometer = isset($_POST['minBarometer']) ? $_POST['minBarometer'] : $_SESSION['minBarometer'];
+        if ($boatMinBarometer != '') {
+//        echo "|" . $_POST['minMotor'] . "|";
+            addShorcodeQueryStr(">=", 360, $boatMinBarometer);
+        }
+    }
+    // MAX Barometer siID 360
+    if (isset($_POST['maxBarometer']) || isset($_SESSION['maxBarometer'])) {
+        $boatMaxBarometer = isset($_POST['maxBarometer']) ? $_POST['maxBarometer'] : $_SESSION['maxBarometer'];
+        if ($boatMaxBarometer != '') {
+//        echo "|" . $_POST['maxLength'] . "|";
+            addShorcodeQueryStr("<=", 360, $boatMaxBarometer);
+        }
+    }
+
+    // MIN Sleeping places siID 59
+    if (isset($_POST['minSleepingPlaces']) || isset($_SESSION['minSleepingPlaces'])) {
+        $boatMinSleepingPlaces = isset($_POST['minSleepingPlaces']) ? $_POST['minSleepingPlaces'] : $_SESSION['minSleepingPlaces'];
+        if ($boatMinSleepingPlaces != '') {
+//        echo "|" . $_POST['minMotor'] . "|";
+            addShorcodeQueryStr(">=", 59, $boatMinSleepingPlaces);
+        }
+    }
+    // MAX Sleeping places siID 59
+    if (isset($_POST['maxSleepingPlaces']) || isset($_SESSION['maxSleepingPlaces'])) {
+        $boatMaxSleepingPlaces = isset($_POST['maxSleepingPlaces']) ? $_POST['maxSleepingPlaces'] : $_SESSION['maxSleepingPlaces'];
+        if ($boatMaxSleepingPlaces != '') {
+//        echo "|" . $_POST['maxLength'] . "|";
+            addShorcodeQueryStr("<=", 59, $boatMaxSleepingPlaces);
+        }
+    }
+
+    // MIN Cabin places siID 442
+    if (isset($_POST['minCabin']) || isset($_SESSION['minCabin'])) {
+        $boatMinCabin = isset($_POST['minCabin']) ? $_POST['minCabin'] : $_SESSION['minCabin'];
+        if ($boatMinCabin != '') {
+//        echo "|" . $_POST['minMotor'] . "|";
+            addShorcodeQueryStr(">=", 442, $boatMinCabin);
+        }
+    }
+    // MAX Cabin places siID 442
+    if (isset($_POST['maxCabin']) || isset($_SESSION['maxCabin'])) {
+        $boatMaxCabin = isset($_POST['maxCabin']) ? $_POST['maxCabin'] : $_SESSION['maxCabin'];
+        if ($boatMaxCabin != '') {
+//        echo "|" . $_POST['maxLength'] . "|";
+            addShorcodeQueryStr("<=", 442, $boatMaxCabin);
+        }
+    }
+
+//    echo " ++++++++ Shortcode number: " . $GLOBALS['numShortcode'];
+//    echo " Shortcode query: " . $GLOBALS['queryShortcode'] . "++++++++++";
+
+    $GLOBALS['queryStandardItem'] = "";
+    $GLOBALS['numStandardItem'] = 0;
 
     $firstCategory = isset($_POST['category']) ? $_POST['category'][0] : $_SESSION['category'][0];
     $firstStandardItem = isset($_POST['standard-item']) ? $_POST['standard-item'][0] : $_SESSION['standard-item'][0];
@@ -111,9 +286,9 @@ function findBoats()
                 || ($brStandardItems > 1)
             ) {
                 // -Q-
-                $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boats`.`id` IN ( ";
-                $queryWhereStr = $queryWhereStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id`";
-                $queryWhereStr = $queryWhereStr . " FROM ( ";
+//                $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boats`.`id` IN ( ";
+//                $queryWhereStr = $queryWhereStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id`";
+//                $queryWhereStr = $queryWhereStr . " FROM ( ";
                 for ($i = 0; $i < $brStandardItems; $i++) {
                     $categoryID = isset($_POST['category']) ? $_POST['category'][$i] : $_SESSION['category'][$i];
 //            echo "Category id: |" . $categoryID . "|     ";
@@ -127,13 +302,19 @@ function findBoats()
 //            echo "Standard item values to: " . $standardItemToValue . "     ";
 
                     // -Q-
-                    $queryWhereStr = $queryWhereStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id` ";
-                    $queryWhereStr = $queryWhereStr . " FROM `sequalize`.`boat_standard_items` ";
-                    $queryWhereStr = $queryWhereStr . " WHERE `sequalize`.`boat_standard_items`.`standard_item_id`=" . $standardItemID . " ";
+//                    $queryWhereStr = $queryWhereStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id` ";
+//                    $queryWhereStr = $queryWhereStr . " FROM `sequalize`.`boat_standard_items` ";
+//                    $queryWhereStr = $queryWhereStr . " WHERE `sequalize`.`boat_standard_items`.`standard_item_id`=" . $standardItemID . " ";
+
+                    $tempStanadardItemQuery = "";
+                    $tempStanadardItemQuery = $tempStanadardItemQuery . " SELECT `sequalize`.`boat_standard_items`.`boat_id` ";
+                    $tempStanadardItemQuery = $tempStanadardItemQuery . " FROM `sequalize`.`boat_standard_items` ";
+                    $tempStanadardItemQuery = $tempStanadardItemQuery . " WHERE `sequalize`.`boat_standard_items`.`standard_item_id`=" . $standardItemID . " ";
 
                     // -Q-
                     if ($standardItemDescription != '') {
-                        $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`description` LIKE '%" . $standardItemDescription . "%' ";
+//                        $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`description` LIKE '%" . $standardItemDescription . "%' ";
+                        $tempStanadardItemQuery = $tempStanadardItemQuery . " AND `sequalize`.`boat_standard_items`.`description` LIKE '%" . $standardItemDescription . "%' ";
                     }
                     $hasDimension = false;
 
@@ -147,22 +328,59 @@ function findBoats()
 
                     if ($hasDimension) {
                         // -Q-
-                        $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`value` >=" . $standardItemFromValue . " ";
-                        $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`value` <=" . $standardItemToValue . " ";
+//                        $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`value` >=" . $standardItemFromValue . " ";
+//                        $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`value` <=" . $standardItemToValue . " ";
+
+                        $tempStanadardItemQuery = $tempStanadardItemQuery . " AND `sequalize`.`boat_standard_items`.`value` >=" . $standardItemFromValue . " ";
+                        $tempStanadardItemQuery = $tempStanadardItemQuery . " AND `sequalize`.`boat_standard_items`.`value` <=" . $standardItemToValue . " ";
                     }
 
-                    if (($i + 1) < $brStandardItems) $queryWhereStr = $queryWhereStr . " UNION ALL ";
+                    if (($i + 1) < $brStandardItems) {
+//                        $queryWhereStr = $queryWhereStr . " UNION ALL ";
+                        $tempStanadardItemQuery = $tempStanadardItemQuery . " UNION ALL ";
+                    }
+
+                    $GLOBALS['queryStandardItem'] = $GLOBALS['queryStandardItem'] . $tempStanadardItemQuery;
+                    $GLOBALS['numStandardItem']++;
 
                 }
                 // -Q-
-                $queryWhereStr = $queryWhereStr . "     ) boat_standard_items ";
-                $queryWhereStr = $queryWhereStr . " GROUP BY `sequalize`.`boat_standard_items`.`boat_id` ";
-                $queryWhereStr = $queryWhereStr . " HAVING COUNT(*)>" . ($brStandardItems - 1) . " ";
-                $queryWhereStr = $queryWhereStr . " ) ";
+//                $queryWhereStr = $queryWhereStr . "     ) boat_standard_items ";
+//                $queryWhereStr = $queryWhereStr . " GROUP BY `sequalize`.`boat_standard_items`.`boat_id` ";
+//                $queryWhereStr = $queryWhereStr . " HAVING COUNT(*)>" . ($brStandardItems - 1) . " ";
+//                $queryWhereStr = $queryWhereStr . " ) ";
 
 //        echo "|" . $_POST['size-from'] . " - " . $_POST['size-to']. "|";
             }
         }
+    }
+
+//    echo " ++++++++ Standard Item number: " . $GLOBALS['numStandardItem'];
+//    echo " Standard Item query: " . $GLOBALS['queryStandardItem'] . "++++++++++";
+    $numStandardItems = ($GLOBALS['numShortcode'] + $GLOBALS['numStandardItem']);
+    if (($GLOBALS['numStandardItem'] > 0)
+        || ($GLOBALS['numShortcode'] > 0)
+    ) {
+//        echo "######## OVERALL STANDARD ITEMS NUMBER: " . ($GLOBALS['numShortcode'] + $GLOBALS['numStandardItem']) . " ###############";
+        $selectStandardItem = "";
+        if (($GLOBALS['numStandardItem'] > 0) && ($GLOBALS['numShortcode'] > 0)) {
+            $selectStandardItem = $GLOBALS['queryShortcode'] . " UNION ALL " . $GLOBALS['queryStandardItem'];
+        } else {
+            if ($GLOBALS['numStandardItem'] > 0) $selectStandardItem = $GLOBALS['queryStandardItem'];
+            if ($GLOBALS['numShortcode'] > 0) $selectStandardItem = $GLOBALS['queryShortcode'];
+        }
+//        echo "######## OVERALL STANDARD ITEMS QUERY: " . $selectStandardItem . " ###############";
+
+        $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boats`.`id` IN ( ";
+        $queryWhereStr = $queryWhereStr . " SELECT `sequalize`.`boat_standard_items`.`boat_id`";
+        $queryWhereStr = $queryWhereStr . " FROM ( ";
+
+        $queryWhereStr = $queryWhereStr . $selectStandardItem;
+
+        $queryWhereStr = $queryWhereStr . "     ) boat_standard_items ";
+        $queryWhereStr = $queryWhereStr . " GROUP BY `sequalize`.`boat_standard_items`.`boat_id` ";
+        $queryWhereStr = $queryWhereStr . " HAVING COUNT(*)>" . ($numStandardItems - 1) . " ";
+        $queryWhereStr = $queryWhereStr . " ) ";
     }
 
     // Filter by PRICE
@@ -173,10 +391,10 @@ function findBoats()
         $priceTo = isset($_POST['price-to']) ? $_POST['price-to'] : $_SESSION['price-to'];
         if ($priceFrom != '' || $priceTo != '') {
             if ($priceFrom != '') {
-                $queryWhereStr = $queryWhereStr . " AND prices.`value` >=" . $priceFrom . " ";
+                $queryWhereStr = $queryWhereStr . " AND `sequalize`.`prices`.`value` >=" . $priceFrom . " ";
             }
             if ($priceTo != '') {
-                $queryWhereStr = $queryWhereStr . " AND prices.`value` <=" . $priceTo . " ";
+                $queryWhereStr = $queryWhereStr . " AND `sequalize`.`prices`.`value` <=" . $priceTo . " ";
             }
 //        echo "|" .$_POST['price-from'] . " - " . $_POST['price-to']. "|";
         }
@@ -187,7 +405,7 @@ function findBoats()
         $boatBuilder = isset($_POST['boat-builder']) ? $_POST['boat-builder'] : $_SESSION['boat-builder'];
         if ($boatBuilder != 'all') {
 //        echo "|" .$boatBuilder. "|";
-            $queryWhereStr = $queryWhereStr . " AND builders.`name`='" . $boatBuilder . "'";
+            $queryWhereStr = $queryWhereStr . " AND `sequalize`.`builders`.`name`='" . $boatBuilder . "'";
         }
     }
 
@@ -196,7 +414,7 @@ function findBoats()
         $boatCountry = isset($_POST['boat-country']) ? $_POST['boat-country'] : $_SESSION['boat-country'];
         if ($boatCountry != 'all') {
 //        echo "|" .$boatCountry. "|";
-            $queryWhereStr = $queryWhereStr . " AND boat_locations.`country`='" . $boatCountry . "'";
+            $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_locations`.`country`='" . $boatCountry . "'";
         }
     }
 
@@ -205,16 +423,16 @@ function findBoats()
         $boatYear = isset($_POST['boat-year']) ? $_POST['boat-year'] : $_SESSION['boat-year'];
         if ($boatYear != 'all') {
 //        echo "|" .$boatYear. "|";
-            $queryWhereStr = $queryWhereStr . " AND boats.`year`>='" . $boatYear . "'";
+            $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boats`.`year`>='" . $boatYear . "'";
         }
     }
 
     // Filter by KEYWORD
     $boatKeyword = isset($_POST['boat-keyword']) ? $_POST['boat-keyword'] : $_SESSION['boat-keyword'];
     if (isset($_POST['boat-keyword']) || isset($_SESSION['boat-keyword'])) {
-        if ($boatKeyword != '') {
+        if (trim($boatKeyword) != '') {
 //        echo "|" .$boatKeyword. "|";
-            $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`description` LIKE '%" . $boatKeyword . " ";
+            $queryWhereStr = $queryWhereStr . " AND `sequalize`.`boat_standard_items`.`description` LIKE '%" . $boatKeyword . "%' ";
         }
     }
 
@@ -223,53 +441,20 @@ function findBoats()
         || (trim($firstDescription) != '')
         || ($brStandardItems > 1)
         || (trim($boatKeyword != ''))
+        || ($numStandardItems > 0)
     ) {
         $querySelectStr = $querySelectStr . ",
-                boat_standard_items.value as boat_size,
-                boat_standard_items.description as description";
-        $queryFromStr = $queryFromStr . " LEFT JOIN boat_standard_items ON boats.id=boat_standard_items.boat_id ";
+                `sequalize`.`boat_standard_items`.`value` as boat_size,
+                `sequalize`.`boat_standard_items`.`description` as description";
+        $queryFromStr = $queryFromStr . " LEFT JOIN `sequalize`.`boat_standard_items` ON `sequalize`.`boats`.`id`=`sequalize`.`boat_standard_items`.`boat_id` ";
     }
 
-    $queryWhereStr = $queryWhereStr . " GROUP BY boats.id LIMIT 1000";
+    $queryWhereStr = $queryWhereStr . " GROUP BY `sequalize`.`boats`.`id` LIMIT 100";
 
     $queryStr = $querySelectStr . $queryFromStr . $queryWhereStr;
 
-//    echo "------ Query -----";
+//    echo "---------QUERY-----------";
 //    echo $queryStr;
-
-//    $result = $conn->query($queryStr);
-//    $brBoats = 0;
-//    $photoUrl = "http://46.101.221.106/images/";
-//    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-//        $brBoats++;
-//        $id = $row['id'];
-//        $title = $row['title'];
-//        $type = $row['type'];
-//        $photo = $row['photo_url'];
-//        $price = $row['price'];
-//        $builder = $row['builder'];
-//        $year = $row['year'];
-//        $country = $row['country'];
-////        $description = $row['description'];
-////        $boat_size = $row['boat_size'];
-//
-//        echo "<a href='http://" . $_SERVER['HTTP_HOST'] . "/boat/boat.php?id=" . $row['id'] . "'>";
-//        echo "<div class='res' id='$id'>";
-//        echo "<div class='col-md-4'><img src='" . $photoUrl . "" . $photo . "' class='image-rounded' height=\"100\" ></div>";
-//        echo "<h3 id='title' class='col-md-8'>Title: $title</h3>
-//            <h4 class='col-md-8'> Type: $type,
-//            Price: $price &euro;,
-//            Builder: $builder,
-//            Country: $country,
-//            Boat year: $year,</h4>";
-////        echo "<h4 class='col-md-8'>
-////            Boat size: $boat_size ft,
-////            Description: $description</h4>";
-//        echo "</div>";
-//        echo "</a>";
-//
-//    }
-//    echo "Number of search results: " . $brBoats;
 
     $query = $conn->prepare($queryStr);
     $query->execute();
@@ -544,23 +729,6 @@ function getBoatPrimaryPhoto($boatInfoObject)
     $boatMainDetails = get_object_vars($boatInfoObject);
     return get_object_vars($boatMainDetails['photo'])['location_filename'];
 }
-
-//// Get boat standard items details
-//function getBoatStandardItems($boatInfoObject)
-//{
-//    $boatStandarItemsObject = get_object_vars($boatInfoObject)['standardItems'];
-//    $boatStandardItems = array();
-//    foreach ($boatStandarItemsObject as $bsd) {
-//        foreach ($bsd as $intoBsd) {
-//            array_push(
-//                $boatStandardItems,
-//                array('name' => get_object_vars(get_object_vars($intoBsd)['standard_item'])['name'],
-//                    'value' => get_object_vars($intoBsd)['value'],
-//                    'description' => get_object_vars($intoBsd)['description']));
-//        }
-//    }
-//    return $boatStandardItems;
-//}
 
 // Get boat standard items details by category
 function getBoatStandardItems($boatInfoObject)

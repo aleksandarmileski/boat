@@ -4,26 +4,13 @@ require "functions.php";
 
 if (isset($_POST['search'])) {
 
-    $_SESSION['search'] = $_POST['search'];
-
-    $_SESSION['boat-type'] = $_POST['boat-type'];
-    $_SESSION['price-from'] = $_POST['price-from'];
-    $_SESSION['price-to'] = $_POST['price-to'];
-    $_SESSION['boat-keyword'] = $_POST['boat-keyword'];
-    $_SESSION['boat-builder'] = $_POST['boat-builder'];
-    $_SESSION['boat-country'] = $_POST['boat-country'];
-    $_SESSION['boat-year'] = $_POST['boat-year'];
-
-    $_SESSION['value-from'] = $_POST['value-from'];
-    $_SESSION['value-to'] = $_POST['value-to'];
-
-    $_SESSION['category'] = $_POST['category'];
-    $_SESSION['standard-item'] = $_POST['standard-item'];
-
-    $_SESSION['description'] = $_POST['description'];
+    $_SESSION = $_POST;
 
 //    echo "<pre>";
 //    print_r($_POST);
+//    echo "</pre>";
+//    echo "<pre>";
+//    print_r($_SESSION);
 //    echo "</pre>";
 
 }
@@ -78,46 +65,247 @@ if (isset($_POST['search'])) {
                     <label for="standard-item-value-from">Boat standard items:</label>
 
                     <div id="defaultStandardItems">
-                        <input type="number" min="0" placeholder="Min Length" id="minLength" name="minLength"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="10" placeholder="Max Length" id="maxLength" name="maxLength"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="0" placeholder="Min Head Room" id="minHeadRoom" name="minHeadRoom"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="10" placeholder="Max Head Room" id="maxHeadRoom" name="maxHeadRoom"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="0" placeholder="Min Voltage" id="minVoltage" name="minVoltage"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="10" placeholder="Max Voltage" id="maxVoltage" name="maxVoltage"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="0" placeholder="Min Motor" id="minMotor" name="minMotor"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="10" placeholder="Max Motor" id="maxMotor" name="maxMotor"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="0" placeholder="Min kW" id="minkW" name="minkW"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="10" placeholder="Max kW" id="maxkW" name="maxkW"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="0" placeholder="Min HP" id="minHP" name="minHP"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="10" placeholder="Max HP" id="maxHP" name="maxHP"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="0" placeholder="Min Stabilizers" id="minStabilizers" name="minStabilizers"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="10" placeholder="Max Stabilizers" id="maxStabilizers" name="maxStabilizers"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="0" placeholder="Min Barometer" id="minBarometer" name="minBarometer"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="10" placeholder="Max Barometer" id="maxBarometer" name="maxBarometer"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="0" placeholder="Min Sleeping Places" id="minSleepingPlaces" name="minSleepingPlaces"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="10" placeholder="Max Sleeping Places" id="maxSleepingPlaces" name="maxSleepingPlaces"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="0" placeholder="Min Cabin" id="minCabin" name="minCabin"
-                               class="inlineNumberInput form-control">
-                        <input type="number" min="10" placeholder="Max Cabin" id="maxCabin" name="maxCabin"
-                               class="inlineNumberInput form-control">
+                        <input type="number"
+                               min="0"
+                            <?php if (isset($_SESSION['maxLength'])) {
+                                echo "max='" . $_SESSION['maxLength'] . "'";
+                            } ?>
+                               placeholder="Min Length"
+                               id="minLength" name="minLength"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['minLength'])) {
+                                   echo $_SESSION['minLength'];
+                               } ?>
+                        >
+                        <input type="number"
+                            <?php if (isset($_SESSION['minLength'])) {
+                                echo "min='" . $_SESSION['minLength'] . "'";
+                            } else {
+                                echo "min='0'";
+                            } ?>
+                               placeholder="Max Length"
+                               id="maxLength" name="maxLength"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['maxLength'])) {
+                                   echo $_SESSION['maxLength'];
+                               } ?>
+                        >
+                        <input type="number" min="0"
+                            <?php if (isset($_SESSION['maxHeadRoom'])) {
+                                echo "max='" . $_SESSION['maxHeadRoom'] . "'";
+                            } ?>
+                               placeholder="Min Head Room"
+                               id="minHeadRoom" name="minHeadRoom"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['minHeadRoom'])) {
+                                   echo $_SESSION['minHeadRoom'];
+                               } ?>
+                        >
+                        <input type="number"
+                            <?php if (isset($_SESSION['minHeadRoom'])) {
+                                echo "min='" . $_SESSION['minHeadRoom'] . "'";
+                            } else {
+                                echo "min='0'";
+                            } ?>
+                               placeholder="Max Head Room"
+                               id="maxHeadRoom" name="maxHeadRoom"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['maxHeadRoom'])) {
+                                   echo $_SESSION['maxHeadRoom'];
+                               } ?>
+                        >
+                        <input type="number" min="0"
+                            <?php if (isset($_SESSION['maxVoltage'])) {
+                                echo "max='" . $_SESSION['maxVoltage'] . "'";
+                            } ?>
+                               placeholder="Min Voltage"
+                               id="minVoltage" name="minVoltage"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['minVoltage'])) {
+                                   echo $_SESSION['minVoltage'];
+                               } ?>
+                        >
+                        <input type="number"
+                            <?php if (isset($_SESSION['minVoltage'])) {
+                                echo "min='" . $_SESSION['minVoltage'] . "'";
+                            } else {
+                                echo "min='0'";
+                            } ?>
+                               placeholder="Max Voltage"
+                               id="maxVoltage" name="maxVoltage"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['maxVoltage'])) {
+                                   echo $_SESSION['maxVoltage'];
+                               } ?>
+                        >
+                        <input type="number" min="0"
+                            <?php if (isset($_SESSION['maxMotor'])) {
+                                echo "max='" . $_SESSION['maxMotor'] . "'";
+                            } ?>
+                               placeholder="Min Motor"
+                               id="minMotor" name="minMotor"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['minMotor'])) {
+                                   echo $_SESSION['minMotor'];
+                               } ?>
+                        >
+                        <input type="number"
+                            <?php if (isset($_SESSION['minMotor'])) {
+                                echo "min='" . $_SESSION['minMotor'] . "'";
+                            } else {
+                                echo "min='0'";
+                            } ?>
+                               placeholder="Max Motor"
+                               id="maxMotor" name="maxMotor"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['maxMotor'])) {
+                                   echo $_SESSION['maxMotor'];
+                               } ?>
+                        >
+                        <input type="number" min="0"
+                            <?php if (isset($_SESSION['maxkW'])) {
+                                echo "max='" . $_SESSION['maxkW'] . "'";
+                            } ?>
+                               placeholder="Min kW"
+                               id="minkW" name="minkW"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['minkW'])) {
+                                   echo $_SESSION['minkW'];
+                               } ?>
+                        >
+                        <input type="number"
+                            <?php if (isset($_SESSION['minkW'])) {
+                                echo "min='" . $_SESSION['minkW'] . "'";
+                            } else {
+                                echo "min='0'";
+                            } ?>
+                               placeholder="Max kW"
+                               id="maxkW" name="maxkW"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['maxkW'])) {
+                                   echo $_SESSION['maxkW'];
+                               } ?>
+                        >
+                        <input type="number" min="0"
+                            <?php if (isset($_SESSION['maxHP'])) {
+                                echo "max='" . $_SESSION['maxHP'] . "'";
+                            } ?>
+                               placeholder="Min POWER HP"
+                               id="minHP" name="minHP"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['minHP'])) {
+                                   echo $_SESSION['minHP'];
+                               } ?>
+                        >
+                        <input type="number"
+                            <?php if (isset($_SESSION['minHP'])) {
+                                echo "min='" . $_SESSION['minHP'] . "'";
+                            } else {
+                                echo "min='0'";
+                            } ?>
+                               placeholder="Max POWER HP"
+                               id="maxHP" name="maxHP"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['maxHP'])) {
+                                   echo $_SESSION['maxHP'];
+                               } ?>
+                        >
+                        <input type="number" min="0"
+                            <?php if (isset($_SESSION['maxStabilizers'])) {
+                                echo "max='" . $_SESSION['maxStabilizers'] . "'";
+                            } ?>
+                               placeholder="Min Stabilizers"
+                               id="minStabilizers" name="minStabilizers"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['minStabilizers'])) {
+                                   echo $_SESSION['minStabilizers'];
+                               } ?>
+                        >
+                        <input type="number"
+                            <?php if (isset($_SESSION['minStabilizers'])) {
+                                echo "min='" . $_SESSION['minStabilizers'] . "'";
+                            } else {
+                                echo "min='0'";
+                            } ?>
+                               placeholder="Max Stabilizers"
+                               id="maxStabilizers" name="maxStabilizers"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['maxStabilizers'])) {
+                                   echo $_SESSION['maxStabilizers'];
+                               } ?>
+                        >
+                        <input type="number" min="0"
+                            <?php if (isset($_SESSION['maxBarometer'])) {
+                                echo "max='" . $_SESSION['maxBarometer'] . "'";
+                            } ?>
+                               placeholder="Min Barometer"
+                               id="minBarometer" name="minBarometer"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['minBarometer'])) {
+                                   echo $_SESSION['minBarometer'];
+                               } ?>
+                        >
+                        <input type="number"
+                            <?php if (isset($_SESSION['minBarometer'])) {
+                                echo "min='" . $_SESSION['minBarometer'] . "'";
+                            } else {
+                                echo "min='0'";
+                            } ?>
+                               placeholder="Max Barometer"
+                               id="maxBarometer" name="maxBarometer"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['maxBarometer'])) {
+                                   echo $_SESSION['maxBarometer'];
+                               } ?>
+                        >
+                        <input type="number" min="0"
+                            <?php if (isset($_SESSION['maxSleepingPlaces'])) {
+                                echo "max='" . $_SESSION['maxSleepingPlaces'] . "'";
+                            } ?>
+                               placeholder="Min Sleeping Places"
+                               id="minSleepingPlaces" name="minSleepingPlaces"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['minSleepingPlaces'])) {
+                                   echo $_SESSION['minSleepingPlaces'];
+                               } ?>
+                        >
+                        <input type="number"
+                            <?php if (isset($_SESSION['minSleepingPlaces'])) {
+                                echo "min='" . $_SESSION['minSleepingPlaces'] . "'";
+                            } else {
+                                echo "min='0'";
+                            } ?>
+                               placeholder="Max Sleeping Places"
+                               id="maxSleepingPlaces" name="maxSleepingPlaces"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['maxSleepingPlaces'])) {
+                                   echo $_SESSION['maxSleepingPlaces'];
+                               } ?>
+                        >
+                        <input type="number" min="0"
+                            <?php if (isset($_SESSION['maxCabin'])) {
+                                echo "max='" . $_SESSION['maxCabin'] . "'";
+                            } ?>
+                               placeholder="Min Cabin"
+                               id="minCabin" name="minCabin"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['minCabin'])) {
+                                   echo $_SESSION['minCabin'];
+                               } ?>
+                        >
+                        <input type="number"
+                            <?php if (isset($_SESSION['minCabin'])) {
+                                echo "min='" . $_SESSION['minCabin'] . "'";
+                            } else {
+                                echo "min='0'";
+                            } ?>
+                               placeholder="Max Cabin"
+                               id="maxCabin" name="maxCabin"
+                               class="inlineNumberInput form-control"
+                               value=<?php if (isset($_SESSION['maxCabin'])) {
+                                   echo $_SESSION['maxCabin'];
+                               } ?>
+                        >
                     </div>
 
                     <?php
@@ -167,8 +355,11 @@ if (isset($_POST['search'])) {
                             <input type="text"
                                    id="description<?php echo $i > 0 ? $i : ""; ?>"
                                    name="description[]"
-                                   class="form-control input">
-
+                                   class="form-control input"
+                                   value=<?php if (isset($_SESSION['description'][$i])) {
+                                       echo $_SESSION['description'][$i];
+                                   } ?>
+                            >
                             <div id="dimensionValues<?php echo $i > 0 ? $i : ""; ?>"
                                 <?php
                                 if (isset($_SESSION['standard-item'])) {
@@ -220,21 +411,32 @@ if (isset($_POST['search'])) {
 
                 <!--boat price-->
                 <label>Price</label><br>
-                <input type="number" step="100" id="price-from" name="price-from" min="0"
+                <input type="number" step="100"
+                       id="price-from" name="price-from"
+                       min="0"
+                    <?php if (isset($_SESSION['price-to'])) {
+                        echo "max='" . $_SESSION['price-to'] . "'";
+                    } ?>
                        value=<?php if (isset($_SESSION['price-from'])) {
                            echo $_SESSION['price-from'];
                        } else {
                            echo 0;
                        } ?>
-                       class="form-control textinput input inlineProp">
+                       class="form-control textinput input inlineProp inlineNumberInput">
                 <label for="price-to">to</label>
-                <input type="number" step="100" id="price-to" name="price-to" min="0"
+                <input type="number" step="100"
+                       id="price-to" name="price-to"
+                    <?php if (isset($_SESSION['price-from'])) {
+                        echo "min='" . $_SESSION['price-from'] . "'";
+                    } else {
+                        echo "min='0'";
+                    } ?>
                        value=<?php if (isset($_SESSION['price-to'])) {
                            echo $_SESSION['price-to'];
                        } else {
                            echo 150000;
                        } ?>
-                       class="form-control textinput input inlineProp">
+                       class="form-control textinput input inlineProp inlineNumberInput">
                 <label for="price-from">&euro;</label><br>
                 <br>
 
