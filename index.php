@@ -550,8 +550,16 @@ if (isset($_POST['search'])) {
     var categories = <?=json_encode(getBoatCategories()); ?>;
     var standardItems = <?=json_encode(getStandardItems()); ?>;
     var standardItemsNullDimension = <?=json_encode(getStandardItemsNullDimensions()); ?>;
-    var boatsNo = <?=json_encode(ceil(count($boats) / 10)); ?>;
-
+    console.log("boats number: " +<?=json_encode(count($boats)); ?>);
+    if (<?=json_encode(count($boats)); ?>==0
+    )
+    {
+        var boatsNo = 1;
+    }
+    else
+    {
+        var boatsNo = <?=json_encode(ceil(count($boats) / 10)); ?>;
+    }
 </script>
 <script src="https://code.jquery.com/jquery-3.1.1.js"
         integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="

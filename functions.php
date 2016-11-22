@@ -771,6 +771,7 @@ function getBoatDataObject($id)
 
 function getInfo($postParam, $boat_id, $brokers_id)
 {
+
     $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRlbmtvbWFuY2Vza2kxMjNAZ21haWwuY29tIiwiaWQiOjE4NywiaWF0IjoxNDc4MDEyNDMxfQ.snQ9PvwVTrsJlNIfi69ZP5flsZe3lntaPCsszAakU9U';
 
     $ch = curl_init();
